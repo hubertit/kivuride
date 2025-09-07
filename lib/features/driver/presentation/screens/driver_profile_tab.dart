@@ -167,11 +167,14 @@ class _DriverProfileTabState extends ConsumerState<DriverProfileTab> {
               const SizedBox(height: AppTheme.spacing24),
 
               // Stats Section
-              Text(
-                'Your Stats',
-                style: AppTheme.titleMedium.copyWith(
-                  color: AppTheme.textPrimaryColor,
-                  fontWeight: FontWeight.w600,
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Your Stats',
+                  style: AppTheme.titleMedium.copyWith(
+                    color: AppTheme.textPrimaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               const SizedBox(height: AppTheme.spacing16),
@@ -233,11 +236,14 @@ class _DriverProfileTabState extends ConsumerState<DriverProfileTab> {
               const SizedBox(height: AppTheme.spacing32),
 
               // Menu Items
-              Text(
-                'Account',
-                style: AppTheme.titleMedium.copyWith(
-                  color: AppTheme.textPrimaryColor,
-                  fontWeight: FontWeight.w600,
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Account',
+                  style: AppTheme.titleMedium.copyWith(
+                    color: AppTheme.textPrimaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               const SizedBox(height: AppTheme.spacing16),
@@ -287,11 +293,14 @@ class _DriverProfileTabState extends ConsumerState<DriverProfileTab> {
 
               const SizedBox(height: AppTheme.spacing24),
 
-              Text(
-                'Support',
-                style: AppTheme.titleMedium.copyWith(
-                  color: AppTheme.textPrimaryColor,
-                  fontWeight: FontWeight.w600,
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Support',
+                  style: AppTheme.titleMedium.copyWith(
+                    color: AppTheme.textPrimaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               const SizedBox(height: AppTheme.spacing16),
@@ -324,6 +333,19 @@ class _DriverProfileTabState extends ConsumerState<DriverProfileTab> {
               ),
 
               const SizedBox(height: AppTheme.spacing24),
+
+              // Account Actions
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Account Actions',
+                  style: AppTheme.titleMedium.copyWith(
+                    color: AppTheme.textPrimaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppTheme.spacing16),
 
               // Logout Button
               Container(
@@ -362,6 +384,52 @@ class _DriverProfileTabState extends ConsumerState<DriverProfileTab> {
                   ),
                   onTap: () {
                     _showLogoutDialog(context);
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: AppTheme.spacing8),
+
+              // Delete Account Button
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: AppTheme.errorColor.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                  border: Border.all(
+                    color: AppTheme.errorColor.withOpacity(0.2),
+                  ),
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.spacing16,
+                    vertical: AppTheme.spacing8,
+                  ),
+                  leading: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppTheme.errorColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                    ),
+                    child: const Icon(
+                      Icons.delete_forever,
+                      color: AppTheme.errorColor,
+                      size: 20,
+                    ),
+                  ),
+                  title: Text(
+                    'Delete Account',
+                    style: AppTheme.bodyLarge.copyWith(
+                      color: AppTheme.errorColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  onTap: () {
+                    _showDeleteAccountDialog(context);
                   },
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
@@ -453,6 +521,70 @@ class _DriverProfileTabState extends ConsumerState<DriverProfileTab> {
               },
               child: Text(
                 'Sign Out',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.errorColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDeleteAccountDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppTheme.surfaceColor,
+          title: Text(
+            'Delete Account',
+            style: AppTheme.titleMedium.copyWith(
+              color: AppTheme.errorColor,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'This action cannot be undone. This will permanently delete your account and remove all your data from our servers.',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.textSecondaryColor,
+                ),
+              ),
+              const SizedBox(height: AppTheme.spacing16),
+              Text(
+                'Are you sure you want to delete your account?',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.textPrimaryColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.textSecondaryColor,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // TODO: Implement delete account logic
+                ScaffoldMessenger.of(context).showSnackBar(
+                  AppTheme.warningSnackBar(message: 'Account deletion feature coming soon!'),
+                );
+              },
+              child: Text(
+                'Delete Account',
                 style: AppTheme.bodyMedium.copyWith(
                   color: AppTheme.errorColor,
                   fontWeight: FontWeight.w600,
