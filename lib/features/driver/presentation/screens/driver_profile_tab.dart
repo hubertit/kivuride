@@ -516,10 +516,11 @@ class _DriverProfileTabState extends ConsumerState<DriverProfileTab> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                // TODO: Implement logout logic
-                ScaffoldMessenger.of(context).showSnackBar(
-                  AppTheme.successSnackBar(message: 'Signed out successfully!'),
+                Navigator.of(context).pop(); // Close dialog
+                // Navigate back to login screen
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/login',
+                  (route) => false,
                 );
               },
               child: Text(

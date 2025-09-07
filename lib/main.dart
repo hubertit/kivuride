@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
 import 'core/config/app_config.dart';
 import 'features/splash/presentation/screens/splash_screen.dart';
+import 'features/auth/presentation/screens/login_screen.dart';
 
 void main() {
   runApp(
@@ -22,6 +23,9 @@ class KivuRideApp extends StatelessWidget {
       theme: AppTheme.themeData,
       debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
+      routes: {
+        '/login': (context) => const LoginScreen(),
+      },
     );
   }
 }
