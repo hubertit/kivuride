@@ -53,26 +53,27 @@ class RideTypeSelector extends StatelessWidget {
         ),
         const SizedBox(height: AppTheme.spacing12),
         
-        // Ride type cards
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: rideTypes.map((rideType) {
-              final isSelected = selectedRideType == rideType['id'];
-              
-              return Container(
-                width: 140,
-                margin: const EdgeInsets.only(right: AppTheme.spacing12),
+        // Ride type cards - compact horizontal layout
+        Row(
+          children: rideTypes.map((rideType) {
+            final isSelected = selectedRideType == rideType['id'];
+            
+            return Expanded(
+              child: Container(
+                margin: const EdgeInsets.only(right: AppTheme.spacing8),
                 child: InkWell(
                   onTap: () => onRideTypeSelected(rideType['id']),
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
                   child: Container(
-                    padding: const EdgeInsets.all(AppTheme.spacing12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.spacing8,
+                      vertical: AppTheme.spacing10,
+                    ),
                     decoration: BoxDecoration(
                       color: isSelected 
                           ? rideType['color'].withOpacity(0.1)
                           : AppTheme.surfaceColor,
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
                       border: Border.all(
                         color: isSelected 
                             ? rideType['color']
@@ -81,75 +82,36 @@ class RideTypeSelector extends StatelessWidget {
                       ),
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Icon and name
-                        Row(
-                          children: [
-                            Icon(
-                              rideType['icon'],
-                              color: rideType['color'],
-                              size: 20,
-                            ),
-                            const SizedBox(width: AppTheme.spacing8),
-                            Expanded(
-                              child: Text(
-                                rideType['name'],
-                                style: AppTheme.titleSmall.copyWith(
-                                  color: AppTheme.textPrimaryColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ],
+                        // Icon
+                        Icon(
+                          rideType['icon'],
+                          color: rideType['color'],
+                          size: 18,
                         ),
                         
-                        const SizedBox(height: AppTheme.spacing8),
+                        const SizedBox(height: AppTheme.spacing4),
                         
-                        // Description
+                        // Name
                         Text(
-                          rideType['description'],
+                          rideType['name'],
                           style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.textSecondaryColor,
+                            color: AppTheme.textPrimaryColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11,
                           ),
-                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                        ),
-                        
-                        const SizedBox(height: AppTheme.spacing8),
-                        
-                        // Features
-                        Wrap(
-                          spacing: AppTheme.spacing4,
-                          runSpacing: AppTheme.spacing2,
-                          children: (rideType['features'] as List).take(2).map((feature) {
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppTheme.spacing6,
-                                vertical: AppTheme.spacing2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: rideType['color'].withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(AppTheme.borderRadius6),
-                              ),
-                              child: Text(
-                                feature,
-                                style: AppTheme.bodySmall.copyWith(
-                                  color: rideType['color'],
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            );
-                          }).toList(),
                         ),
                       ],
                     ),
                   ),
                 ),
-              );
-            }).toList(),
-          ),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );

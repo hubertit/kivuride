@@ -178,7 +178,7 @@ class _FindRideTabState extends ConsumerState<FindRideTab>
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppTheme.spacing12,
-                    vertical: AppTheme.spacing16,
+                    vertical: AppTheme.spacing12,
                   ),
                   decoration: BoxDecoration(
                     color: AppTheme.surfaceColor,
@@ -201,7 +201,7 @@ class _FindRideTabState extends ConsumerState<FindRideTab>
                         },
                       ),
                       
-                      const SizedBox(height: AppTheme.spacing20),
+                      const SizedBox(height: AppTheme.spacing12),
                       
                       // Departure Field
                       CustomTextField(
