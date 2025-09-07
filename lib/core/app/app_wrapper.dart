@@ -13,13 +13,25 @@ class AppWrapper extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
 
-    // Show loading screen while checking authentication
+    // Show loading screen while checking authentication (with timeout)
     if (authState.isLoading) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: AppTheme.backgroundColor,
         body: Center(
-          child: CircularProgressIndicator(
-            color: AppTheme.primaryColor,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CircularProgressIndicator(
+                color: AppTheme.primaryColor,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Loading KivuRide...',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.textSecondaryColor,
+                ),
+              ),
+            ],
           ),
         ),
       );

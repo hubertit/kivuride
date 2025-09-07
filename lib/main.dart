@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
 import 'core/config/app_config.dart';
-import 'core/app/app_wrapper.dart';
+import 'core/app/simple_app_wrapper.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/rider/presentation/screens/notifications_screen.dart';
 import 'features/rider/presentation/screens/recent_activities_screen.dart';
@@ -26,7 +26,7 @@ class KivuRideApp extends StatelessWidget {
       title: AppConfig.appName,
       theme: AppTheme.themeData,
       debugShowCheckedModeBanner: false,
-      home: const AppWrapper(),
+      home: const SimpleAppWrapper(),
       routes: {
         '/login': (context) => const LoginScreen(),
         '/notifications': (context) => const NotificationsScreen(),

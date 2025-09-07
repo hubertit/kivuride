@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/auth_service.dart';
 
@@ -34,8 +35,23 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   // Check authentication status on app start
   Future<void> _checkAuthStatus() async {
-    state = state.copyWith(isLoading: true);
-    
+    try {
+      state = state.copyWith(isLoading: true);
+      
+      // Add timeout to prevent infinite loading
+      final result = await Future.any([
+        _performAuthCheck(),
+        Future.delayed(const Duration(seconds: 5), () => throw TimeoutException('Auth check timeout')),
+      ]);
+      
+      state = result;
+    } catch (e) {
+      // If auth check fails, default to not logged in
+      state = const AuthState(isLoggedIn: false, isLoading: false);
+    }
+  }
+
+  Future<AuthState> _performAuthCheck() async {
     final isLoggedIn = await AuthService.isLoggedIn();
     Map<String, dynamic>? userData;
     
@@ -43,7 +59,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       userData = await AuthService.getCurrentUser();
     }
     
-    state = state.copyWith(
+    return AuthState(
       isLoggedIn: isLoggedIn,
       userData: userData,
       isLoading: false,
