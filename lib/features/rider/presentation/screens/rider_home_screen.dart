@@ -9,7 +9,9 @@ import 'rider_history_tab.dart';
 import 'rider_profile_tab.dart';
 
 class RiderHomeScreen extends ConsumerStatefulWidget {
-  const RiderHomeScreen({super.key});
+  final int initialIndex;
+  
+  const RiderHomeScreen({super.key, this.initialIndex = 0});
 
   @override
   ConsumerState<RiderHomeScreen> createState() => _RiderHomeScreenState();
@@ -17,7 +19,7 @@ class RiderHomeScreen extends ConsumerStatefulWidget {
 
 class _RiderHomeScreenState extends ConsumerState<RiderHomeScreen>
     with TickerProviderStateMixin {
-  int _currentIndex = 0;
+  late int _currentIndex;
   late PageController _pageController;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -32,6 +34,7 @@ class _RiderHomeScreenState extends ConsumerState<RiderHomeScreen>
   @override
   void initState() {
     super.initState();
+    _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: _currentIndex);
     _initializeAnimations();
     _animationController.forward();

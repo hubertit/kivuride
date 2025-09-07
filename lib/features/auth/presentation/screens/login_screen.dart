@@ -4,13 +4,12 @@ import 'package:country_picker/country_picker.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/config/app_config.dart';
 import '../../../../core/config/mock_credentials.dart';
+import '../../../../core/providers/auth_provider.dart';
 import '../../../../shared/widgets/primary_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/utils/phone_input_formatter.dart';
 import 'signup_screen.dart';
 import 'forgot_password_screen.dart';
-import '../../../rider/presentation/screens/rider_home_screen.dart';
-import '../../../driver/presentation/screens/driver_home_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
