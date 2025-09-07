@@ -206,7 +206,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                 position: _slideAnimation,
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.spacing16,
+            horizontal: AppTheme.spacing12,
             vertical: AppTheme.spacing24,
           ),
                   child: Form(

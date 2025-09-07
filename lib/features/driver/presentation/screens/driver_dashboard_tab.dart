@@ -11,6 +11,7 @@ class DriverDashboardTab extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
+        centerTitle: false,
         title: Text(
           'Driver Dashboard',
           style: AppTheme.titleLarge.copyWith(
@@ -30,7 +31,7 @@ class DriverDashboardTab extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.spacing16,
+            horizontal: AppTheme.spacing12,
             vertical: AppTheme.spacing24,
           ),
           child: Column(

@@ -11,6 +11,7 @@ class RiderHomeTab extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
+        centerTitle: false,
         title: Text(
           'KivuRide',
           style: AppTheme.titleLarge.copyWith(
@@ -30,7 +31,7 @@ class RiderHomeTab extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.spacing16,
+            horizontal: AppTheme.spacing12,
             vertical: AppTheme.spacing24,
           ),
           child: Column(
@@ -126,6 +127,7 @@ class RiderHomeTab extends StatelessWidget {
               const SizedBox(height: AppTheme.spacing16),
               
               Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(AppTheme.spacing20),
                 decoration: BoxDecoration(
                   color: AppTheme.surfaceColor,

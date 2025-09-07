@@ -46,7 +46,7 @@ class _DriverProfileTabState extends ConsumerState<DriverProfileTab> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.spacing16,
+            horizontal: AppTheme.spacing12,
             vertical: AppTheme.spacing24,
           ),
           child: Column(
