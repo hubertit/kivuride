@@ -128,8 +128,8 @@ class _FindRideTabSimpleState extends ConsumerState<FindRideTabSimple>
                         controller: _departureController,
                         textInputAction: TextInputAction.next,
                         prefixIcon: Container(
-                          width: 8,
-                          height: 8,
+                          width: 6,
+                          height: 6,
                           decoration: BoxDecoration(
                             color: AppTheme.primaryColor,
                             shape: BoxShape.circle,
@@ -153,8 +153,8 @@ class _FindRideTabSimpleState extends ConsumerState<FindRideTabSimple>
                         controller: _destinationController,
                         textInputAction: TextInputAction.done,
                         prefixIcon: Container(
-                          width: 8,
-                          height: 8,
+                          width: 6,
+                          height: 6,
                           decoration: BoxDecoration(
                             color: AppTheme.errorColor,
                             shape: BoxShape.circle,
