@@ -2,9 +2,9 @@ class MockCredentials {
   // Mock Rider Account
   static const Map<String, dynamic> riderAccount = {
     'name': 'John Rider',
-    'email': 'rider@kivuride.com',
+    'email': 'rider@kivuride.rw',
     'phone': '+250788123456',
-    'password': 'rider123',
+    'password': 'Pass123',
     'accountType': 'rider',
     'userId': 'rider_001',
     'profile': {
@@ -18,9 +18,9 @@ class MockCredentials {
   // Mock Driver Account
   static const Map<String, dynamic> driverAccount = {
     'name': 'Sarah Driver',
-    'email': 'driver@kivuride.com',
+    'email': 'driver@kivuride.rw',
     'phone': '+250788654321',
-    'password': 'driver123',
+    'password': 'Pass123',
     'accountType': 'driver',
     'userId': 'driver_001',
     'profile': {
@@ -41,18 +41,18 @@ class MockCredentials {
   // Additional Test Accounts
   static const Map<String, dynamic> testRider = {
     'name': 'Test User',
-    'email': 'test@kivuride.com',
+    'email': 'test@kivuride.rw',
     'phone': '+250788999999',
-    'password': 'test123',
+    'password': 'Pass123',
     'accountType': 'rider',
     'userId': 'rider_002',
   };
 
   static const Map<String, dynamic> testDriver = {
     'name': 'Test Driver',
-    'email': 'testdriver@kivuride.com',
+    'email': 'testdriver@kivuride.rw',
     'phone': '+250788888888',
-    'password': 'test123',
+    'password': 'Pass123',
     'accountType': 'driver',
     'userId': 'driver_002',
   };
