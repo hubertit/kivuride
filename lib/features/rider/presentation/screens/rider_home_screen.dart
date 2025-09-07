@@ -4,7 +4,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/config/app_config.dart';
 import '../../../../shared/widgets/custom_bottom_nav_bar.dart';
 import 'rider_home_tab.dart';
-import 'find_ride_tab.dart';
+import 'find_ride_tab_simple.dart';
 import 'rider_history_tab.dart';
 import 'rider_profile_tab.dart';
 
@@ -26,7 +26,7 @@ class _RiderHomeScreenState extends ConsumerState<RiderHomeScreen>
 
   List<Widget> get _tabs => [
     RiderHomeTab(onNavigateToFindRide: () => _onTabTapped(1)),
-    const FindRideTab(),
+    const FindRideTabSimple(),
     const RiderHistoryTab(),
     const RiderProfileTab(),
   ];
