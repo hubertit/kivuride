@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:country_picker/country_picker.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/config/app_config.dart';
 import '../../../../shared/widgets/primary_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
+import '../../../../shared/utils/phone_input_formatter.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -30,6 +32,20 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
   bool _isLoading = false;
   bool _acceptTerms = false;
   String _selectedAccountType = 'rider'; // Default to rider
+  
+  // Country picker for phone registration
+  Country _selectedCountry = Country(
+    phoneCode: '250',
+    countryCode: 'RW',
+    e164Sc: 0,
+    geographic: true,
+    level: 1,
+    name: 'Rwanda',
+    example: '250123456789',
+    displayName: 'Rwanda (RW) [+250]',
+    displayNameNoCountryCode: 'Rwanda (RW)',
+    e164Key: '250-RW-0',
+  );
 
   @override
   void initState() {
@@ -72,6 +88,38 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
     super.dispose();
   }
 
+  void _showCountryPicker() {
+    showCountryPicker(
+      context: context,
+      showPhoneCode: true,
+      countryListTheme: CountryListThemeData(
+        flagSize: 25,
+        backgroundColor: AppTheme.backgroundColor,
+        textStyle: Theme.of(context).textTheme.bodyLarge!,
+        bottomSheetHeight: 500,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        ),
+        inputDecoration: InputDecoration(
+          labelText: 'Search',
+          hintText: 'Start typing to search',
+          prefixIcon: const Icon(Icons.search),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: AppTheme.borderColor,
+            ),
+          ),
+        ),
+      ),
+      onSelect: (Country country) {
+        setState(() {
+          _selectedCountry = country;
+        });
+      },
+    );
+  }
+
   Future<void> _handleSignUp() async {
     if (!_formKey.currentState!.validate()) return;
     
@@ -91,7 +139,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
       final accountData = {
         'name': _nameController.text.trim(),
         'email': _emailController.text.trim(),
-        'phone': _phoneController.text.trim(),
+        'phone': '+${_selectedCountry.phoneCode}${_phoneController.text.trim()}',
         'password': _passwordController.text,
         'accountType': _selectedAccountType,
       };
@@ -361,26 +409,115 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                         
                         const SizedBox(height: AppTheme.spacing16),
                         
-                        // Phone Field
-                        CustomTextField(
-                          label: 'Phone Number',
-                          hint: 'Enter your phone number',
-                          controller: _phoneController,
-                          keyboardType: TextInputType.phone,
-                          textInputAction: TextInputAction.next,
-                          prefixIcon: const Icon(
-                            Icons.phone_outlined,
-                            color: AppTheme.textSecondaryColor,
+                        // Phone Field with Country Code
+                        IntrinsicHeight(
+                          child: Row(
+                            children: [
+                              // Country Code Picker
+                              InkWell(
+                                onTap: _showCountryPicker,
+                                borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                                child: Container(
+                                  height: 56, // Match TextFormField height
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppTheme.spacing12,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.surfaceColor,
+                                    borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                                    border: Border.all(
+                                      color: AppTheme.borderColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        _selectedCountry.flagEmoji,
+                                        style: Theme.of(context).textTheme.bodyLarge,
+                                      ),
+                                      const SizedBox(width: AppTheme.spacing4),
+                                      Text(
+                                        '+${_selectedCountry.phoneCode}',
+                                        style: Theme.of(context).textTheme.bodyLarge,
+                                      ),
+                                      const SizedBox(width: AppTheme.spacing4),
+                                      Icon(
+                                        Icons.arrow_drop_down,
+                                        color: AppTheme.textSecondaryColor,
+                                        size: 20,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: AppTheme.spacing8),
+                              // Phone Number Input
+                              Expanded(
+                                child: TextFormField(
+                                  controller: _phoneController,
+                                  keyboardType: TextInputType.phone,
+                                  textInputAction: TextInputAction.next,
+                                  inputFormatters: [
+                                    PhoneInputFormatter(),
+                                  ],
+                                  style: AppTheme.bodyMedium,
+                                  decoration: InputDecoration(
+                                    labelText: 'Phone Number',
+                                    hintText: '788606765',
+                                    prefixIcon: const Icon(
+                                      Icons.phone_outlined,
+                                      color: AppTheme.textSecondaryColor,
+                                    ),
+                                    labelStyle: AppTheme.bodyMedium.copyWith(
+                                      color: AppTheme.textSecondaryColor,
+                                    ),
+                                    hintStyle: AppTheme.bodyMedium.copyWith(
+                                      color: AppTheme.textHintColor,
+                                    ),
+                                    filled: true,
+                                    fillColor: AppTheme.surfaceColor,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                                      borderSide: const BorderSide(color: AppTheme.borderColor),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                                      borderSide: const BorderSide(color: AppTheme.borderColor),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                                      borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                                      borderSide: const BorderSide(color: AppTheme.errorColor),
+                                    ),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                                      borderSide: const BorderSide(color: AppTheme.errorColor, width: 2),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: AppTheme.spacing16,
+                                      horizontal: AppTheme.spacing16,
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter your phone number';
+                                    }
+                                    if (value.length < 10) {
+                                      return 'Please enter a valid phone number';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your phone number';
-                            }
-                            if (value.length < 10) {
-                              return 'Please enter a valid phone number';
-                            }
-                            return null;
-                          },
                         ),
                         
                         const SizedBox(height: AppTheme.spacing16),
