@@ -251,12 +251,10 @@ class AppTheme {
       primary: primaryColor,
       secondary: secondaryColor,
       surface: surfaceColor,
-      background: backgroundColor,
       error: errorColor,
       onPrimary: backgroundColor,
       onSecondary: textPrimaryColor,
       onSurface: textPrimaryColor,
-      onBackground: textPrimaryColor,
       onError: textPrimaryColor,
     ),
     textTheme: TextTheme(

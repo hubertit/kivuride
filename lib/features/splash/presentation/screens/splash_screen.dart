@@ -107,7 +107,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     _progressController.forward();
     
     // Wait for splash duration and navigate
-    await Future.delayed(Duration(milliseconds: AppConfig.splashDuration));
+    await Future.delayed(const Duration(milliseconds: AppConfig.splashDuration));
     
     if (!mounted) return;
     
@@ -130,6 +130,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -141,169 +143,172 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             stops: [0.0, 1.0],
           ),
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              // Top spacer
-              const Spacer(flex: 2),
-              
-              // Logo and App Name
-              AnimatedBuilder(
-                animation: _logoController,
-                builder: (context, child) {
-                  return Transform.scale(
-                    scale: _logoScale.value,
-                    child: Opacity(
-                      opacity: _logoOpacity.value,
-                      child: Column(
-                        children: [
-                          // Tesla-inspired logo placeholder
-                          Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  AppTheme.primaryColor,
-                                  AppTheme.primaryVariant,
-                                ],
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppTheme.primaryColor.withOpacity(0.3),
-                                  blurRadius: 20,
-                                  spreadRadius: 5,
-                                ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.directions_car,
-                              size: 60,
-                              color: AppTheme.backgroundColor,
-                            ),
-                          ),
-                          const SizedBox(height: AppTheme.spacing24),
-                          
-                          // App Name
-                          AnimatedBuilder(
-                            animation: _textController,
-                            builder: (context, child) {
-                              return Opacity(
-                                opacity: _textOpacity.value,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      AppConfig.appName,
-                                      style: AppTheme.headlineLarge.copyWith(
-                                        color: AppTheme.textPrimaryColor,
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: 2,
-                                      ),
-                                    ),
-                                    const SizedBox(height: AppTheme.spacing8),
-                                    Text(
-                                      'Tesla Robotaxi Experience',
-                                      style: AppTheme.bodyLarge.copyWith(
-                                        color: AppTheme.textSecondaryColor,
-                                        letterSpacing: 1,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-              
-              // Middle spacer
-              const Spacer(flex: 2),
-              
-              // Loading indicator
-              AnimatedBuilder(
-                animation: _progressController,
-                builder: (context, child) {
-                  return Opacity(
-                    opacity: _progressOpacity.value,
+        child: Column(
+          children: [
+            // Top spacer
+            const Spacer(flex: 2),
+            
+            // Logo and App Name
+            AnimatedBuilder(
+              animation: _logoController,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: _logoScale.value,
+                  child: Opacity(
+                    opacity: _logoOpacity.value,
                     child: Column(
                       children: [
-                        // Custom progress indicator
+                        // Tesla-inspired logo placeholder
                         Container(
-                          width: 200,
-                          height: 4,
+                          width: 120,
+                          height: 120,
                           decoration: BoxDecoration(
-                            color: AppTheme.surfaceVariant,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                          child: Stack(
-                            children: [
-                              AnimatedBuilder(
-                                animation: _progressController,
-                                builder: (context, child) {
-                                  return Container(
-                                    width: 200 * _progressController.value,
-                                    height: 4,
-                                    decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          AppTheme.primaryColor,
-                                          AppTheme.primaryVariant,
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(2),
-                                    ),
-                                  );
-                                },
+                            shape: BoxShape.circle,
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                AppTheme.primaryColor,
+                                AppTheme.primaryVariant,
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppTheme.primaryColor.withOpacity(0.3),
+                                blurRadius: 20,
+                                spreadRadius: 5,
                               ),
                             ],
                           ),
-                        ),
-                        const SizedBox(height: AppTheme.spacing16),
-                        Text(
-                          'Initializing...',
-                          style: AppTheme.bodyMedium.copyWith(
-                            color: AppTheme.textTertiaryColor,
+                          child: const Icon(
+                            Icons.directions_car,
+                            size: 60,
+                            color: AppTheme.backgroundColor,
                           ),
+                        ),
+                        const SizedBox(height: AppTheme.spacing24),
+                        
+                        // App Name
+                        AnimatedBuilder(
+                          animation: _textController,
+                          builder: (context, child) {
+                            return Opacity(
+                              opacity: _textOpacity.value,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    AppConfig.appName,
+                                    style: AppTheme.headlineLarge.copyWith(
+                                      color: AppTheme.textPrimaryColor,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 2,
+                                    ),
+                                  ),
+                                  const SizedBox(height: AppTheme.spacing8),
+                                  Text(
+                                    'Your Premium Ride Experience',
+                                    style: AppTheme.bodyLarge.copyWith(
+                                      color: AppTheme.textSecondaryColor,
+                                      letterSpacing: 1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
-                  );
-                },
-              ),
-              
-              // Bottom spacer
-              const Spacer(flex: 1),
-              
-              // Footer
-              Padding(
-                padding: const EdgeInsets.all(AppTheme.spacing24),
-                child: Column(
-                  children: [
-                    Text(
-                      '© ${DateTime.now().year} KivuRide',
-                      style: AppTheme.bodySmall.copyWith(
-                        color: AppTheme.textTertiaryColor,
+                  ),
+                );
+              },
+            ),
+            
+            // Middle spacer
+            const Spacer(flex: 2),
+            
+            // Loading indicator
+            AnimatedBuilder(
+              animation: _progressController,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _progressOpacity.value,
+                  child: Column(
+                    children: [
+                      // Custom progress indicator
+                      Container(
+                        width: 200,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: AppTheme.surfaceVariant,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        child: Stack(
+                          children: [
+                            AnimatedBuilder(
+                              animation: _progressController,
+                              builder: (context, child) {
+                                return Container(
+                                  width: 200 * _progressController.value,
+                                  height: 4,
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        AppTheme.primaryColor,
+                                        AppTheme.primaryVariant,
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: AppTheme.spacing4),
-                    Text(
-                      _appVersionText,
-                      style: AppTheme.labelSmall.copyWith(
-                        color: AppTheme.textHintColor,
+                      const SizedBox(height: AppTheme.spacing16),
+                      Text(
+                        'Initializing...',
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: AppTheme.textTertiaryColor,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            
+            // Bottom spacer
+            const Spacer(flex: 1),
+            
+            // Footer
+            Padding(
+              padding: const EdgeInsets.only(
+                left: AppTheme.spacing24,
+                right: AppTheme.spacing24,
+                bottom: AppTheme.spacing24,
+                top: AppTheme.spacing16,
               ),
-            ],
-          ),
+              child: Column(
+                children: [
+                  Text(
+                    '© ${DateTime.now().year} KivuRide',
+                    style: AppTheme.bodySmall.copyWith(
+                      color: AppTheme.textTertiaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: AppTheme.spacing4),
+                  Text(
+                    _appVersionText,
+                    style: AppTheme.labelSmall.copyWith(
+                      color: AppTheme.textHintColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
