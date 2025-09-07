@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:country_picker/country_picker.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/config/app_config.dart';
+import '../../../../core/config/mock_credentials.dart';
 import '../../../../shared/widgets/primary_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/utils/phone_input_formatter.dart';
@@ -96,29 +97,46 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           ? '+${_selectedCountry.phoneCode}${_phoneController.text.trim()}'
           : _emailController.text.trim();
       
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      final password = _passwordController.text.trim();
+      
+      // Validate against mock credentials
+      final userAccount = MockCredentials.validateLogin(identifier, password);
+      
+      // Simulate API call delay
+      await Future.delayed(const Duration(seconds: 1));
       
       if (!mounted) return;
       
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        AppTheme.successSnackBar(
-          message: 'Login successful! Welcome to KivuRide.',
-        ),
-      );
-      
-      // Navigate to home screen (placeholder)
-      // Navigator.of(context).pushReplacement(
-      //   MaterialPageRoute(builder: (context) => const HomeScreen()),
-      // );
+      if (userAccount != null) {
+        // Show success message
+        final userName = userAccount['name'] as String;
+        final accountType = userAccount['accountType'] as String;
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          AppTheme.successSnackBar(
+            message: 'Welcome back, $userName! ($accountType)',
+          ),
+        );
+        
+        // TODO: Navigate to appropriate home screen based on account type
+        print('Login successful for: $userName ($accountType)');
+        print('User data: $userAccount');
+        
+      } else {
+        // Invalid credentials
+        ScaffoldMessenger.of(context).showSnackBar(
+          AppTheme.errorSnackBar(
+            message: 'Invalid credentials. Please check your email/phone and password.',
+          ),
+        );
+      }
       
     } catch (e) {
       if (!mounted) return;
       
       ScaffoldMessenger.of(context).showSnackBar(
         AppTheme.errorSnackBar(
-          message: 'Login failed. Please check your credentials.',
+          message: 'Login failed. Please try again.',
         ),
       );
     } finally {
