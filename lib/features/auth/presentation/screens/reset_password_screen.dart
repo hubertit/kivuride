@@ -152,8 +152,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
               opacity: _fadeAnimation,
               child: SlideTransition(
                 position: _slideAnimation,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(AppTheme.spacing24),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.spacing16,
+            vertical: AppTheme.spacing24,
+          ),
                   child: Form(
                     key: _formKey,
                     child: Column(
