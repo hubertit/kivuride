@@ -27,7 +27,8 @@ class _FindRideTabState extends ConsumerState<FindRideTab>
   LatLng _center = const LatLng(-1.9441, 30.0619); // Kigali, Rwanda
   Set<Marker> _markers = {};
   bool _isLoading = false;
-  String _selectedRideType = 'standard';
+  String _selectedRideType = '';
+  bool _showRideTypeSelection = false;
 
   // Mock cab locations around Kigali
   final List<Map<String, dynamic>> _mockCabs = [
@@ -133,16 +134,9 @@ class _FindRideTabState extends ConsumerState<FindRideTab>
       return;
     }
 
-    setState(() => _isLoading = true);
-    
-    // Simulate search
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          AppTheme.successSnackBar(message: 'Found ${_mockCabs.length} available rides nearby!'),
-        );
-      }
+    // Show ride type selection
+    setState(() {
+      _showRideTypeSelection = true;
     });
   }
 

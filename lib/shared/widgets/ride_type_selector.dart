@@ -18,8 +18,6 @@ class RideTypeSelector extends StatelessWidget {
       'name': 'Standard',
       'description': 'Affordable everyday rides',
       'icon': Icons.directions_car,
-      'basePrice': 2500,
-      'pricePerKm': 800,
       'features': ['AC', 'Clean car'],
       'color': AppTheme.primaryColor,
     },
@@ -28,8 +26,6 @@ class RideTypeSelector extends StatelessWidget {
       'name': 'Premium',
       'description': 'Luxury vehicles with extras',
       'icon': Icons.directions_car_filled,
-      'basePrice': 3500,
-      'pricePerKm': 1200,
       'features': ['AC', 'WiFi', 'Charging', 'Premium car'],
       'color': AppTheme.warningColor,
     },
@@ -38,20 +34,8 @@ class RideTypeSelector extends StatelessWidget {
       'name': 'XL',
       'description': 'Larger vehicles for groups',
       'icon': Icons.airport_shuttle,
-      'basePrice': 4000,
-      'pricePerKm': 1000,
       'features': ['AC', '6+ seats', 'Luggage space'],
       'color': AppTheme.infoColor,
-    },
-    {
-      'id': 'bike',
-      'name': 'Bike',
-      'description': 'Quick and affordable',
-      'icon': Icons.two_wheeler,
-      'basePrice': 1500,
-      'pricePerKm': 500,
-      'features': ['Helmet provided', 'Quick pickup'],
-      'color': AppTheme.successColor,
     },
   ];
 
@@ -133,17 +117,6 @@ class RideTypeSelector extends StatelessWidget {
                         ),
                         
                         const SizedBox(height: AppTheme.spacing8),
-                        
-                        // Price
-                        Text(
-                          '${rideType['basePrice']} RWF',
-                          style: AppTheme.bodyMedium.copyWith(
-                            color: rideType['color'],
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        
-                        const SizedBox(height: AppTheme.spacing4),
                         
                         // Features
                         Wrap(
