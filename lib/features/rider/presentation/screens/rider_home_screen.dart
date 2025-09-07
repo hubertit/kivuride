@@ -11,7 +11,7 @@ import 'rider_profile_tab.dart';
 class RiderHomeScreen extends ConsumerStatefulWidget {
   final int initialIndex;
   
-  const RiderHomeScreen({super.key, this.initialIndex = 0});
+  const RiderHomeScreen({super.key, this.initialIndex = 1}); // Find Ride tab as default
 
   @override
   ConsumerState<RiderHomeScreen> createState() => _RiderHomeScreenState();

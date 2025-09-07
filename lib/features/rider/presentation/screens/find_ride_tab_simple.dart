@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/theme/app_theme.dart';
+
 import '../../../../core/config/app_config.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/widgets/primary_button.dart';
 
@@ -16,11 +17,11 @@ class _FindRideTabSimpleState extends ConsumerState<FindRideTabSimple>
     with TickerProviderStateMixin {
   final _departureController = TextEditingController();
   final _destinationController = TextEditingController();
-  
+
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  
+
   bool _isLoading = false;
 
   @override
@@ -62,9 +63,11 @@ class _FindRideTabSimpleState extends ConsumerState<FindRideTabSimple>
   }
 
   void _searchRides() {
-    if (_departureController.text.isEmpty || _destinationController.text.isEmpty) {
+    if (_departureController.text.isEmpty ||
+        _destinationController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        AppTheme.errorSnackBar(message: 'Please enter both departure and destination'),
+        AppTheme.errorSnackBar(
+            message: 'Please enter both departure and destination'),
       );
       return;
     }
@@ -127,41 +130,27 @@ class _FindRideTabSimpleState extends ConsumerState<FindRideTabSimple>
                         hint: 'Enter departure location',
                         controller: _departureController,
                         textInputAction: TextInputAction.next,
-                        prefixIcon: Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: AppTheme.primaryColor,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
                         suffixIcon: IconButton(
-                          icon: const Icon(Icons.my_location, color: AppTheme.primaryColor),
+                          icon: const Icon(Icons.my_location,
+                              color: AppTheme.primaryColor),
                           onPressed: () {
                             // TODO: Get current location
                             _departureController.text = 'Current Location';
                           },
                         ),
                       ),
-                      
+
                       const SizedBox(height: AppTheme.spacing12),
-                      
+
                       // Destination Field
                       CustomTextField(
                         label: 'To',
                         hint: 'Enter destination',
                         controller: _destinationController,
                         textInputAction: TextInputAction.done,
-                        prefixIcon: Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: AppTheme.errorColor,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
                         suffixIcon: IconButton(
-                          icon: const Icon(Icons.search, color: AppTheme.primaryColor),
+                          icon: const Icon(Icons.search,
+                              color: AppTheme.primaryColor),
                           onPressed: _searchRides,
                         ),
                       ),
@@ -188,7 +177,8 @@ class _FindRideTabSimpleState extends ConsumerState<FindRideTabSimple>
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: AppTheme.surfaceColor,
-                      borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.borderRadius12),
                       border: Border.all(color: AppTheme.borderColor),
                     ),
                     child: Column(
@@ -216,14 +206,16 @@ class _FindRideTabSimpleState extends ConsumerState<FindRideTabSimple>
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: AppTheme.spacing24),
-                        
+
                         // Available Rides Counter
                         Container(
                           padding: const EdgeInsets.all(AppTheme.spacing16),
                           decoration: BoxDecoration(
                             color: AppTheme.primaryColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
-                            border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
+                            borderRadius:
+                                BorderRadius.circular(AppTheme.borderRadius12),
+                            border: Border.all(
+                                color: AppTheme.primaryColor.withOpacity(0.3)),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
