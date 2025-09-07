@@ -6,33 +6,31 @@ import '../../../../core/config/app_config.dart';
 import '../../../../shared/widgets/primary_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/utils/phone_input_formatter.dart';
-import 'signup_screen.dart';
-import 'forgot_password_screen.dart';
+import 'reset_password_screen.dart';
+import 'login_screen.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+class ForgotPasswordScreen extends ConsumerStatefulWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen>
+class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _passwordController = TextEditingController();
   
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
   
-  bool _isPasswordVisible = false;
   bool _isLoading = false;
-  bool _rememberMe = false;
-  bool _isPhoneLogin = true; // Default to phone login
+  bool _codeSent = false;
+  bool _isPhoneReset = true; // Default to phone reset
   
-  // Country picker for phone login
+  // Country picker for phone reset
   Country _selectedCountry = Country(
     phoneCode: '250',
     countryCode: 'RW',
@@ -80,52 +78,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   void dispose() {
     _emailController.dispose();
     _phoneController.dispose();
-    _passwordController.dispose();
     _animationController.dispose();
     super.dispose();
-  }
-
-  Future<void> _handleLogin() async {
-    if (!_formKey.currentState!.validate()) return;
-    
-    setState(() => _isLoading = true);
-    
-    try {
-      // Get the identifier based on login method
-      final identifier = _isPhoneLogin 
-          ? '+${_selectedCountry.phoneCode}${_phoneController.text.trim()}'
-          : _emailController.text.trim();
-      
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-      
-      if (!mounted) return;
-      
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        AppTheme.successSnackBar(
-          message: 'Login successful! Welcome to KivuRide.',
-        ),
-      );
-      
-      // Navigate to home screen (placeholder)
-      // Navigator.of(context).pushReplacement(
-      //   MaterialPageRoute(builder: (context) => const HomeScreen()),
-      // );
-      
-    } catch (e) {
-      if (!mounted) return;
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        AppTheme.errorSnackBar(
-          message: 'Login failed. Please check your credentials.',
-        ),
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
   }
 
   void _showCountryPicker() {
@@ -160,26 +114,74 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     );
   }
 
-  void _navigateToSignUp() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const SignUpScreen(),
-      ),
-    );
-  }
-
-  void _navigateToForgotPassword() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const ForgotPasswordScreen(),
-      ),
-    );
+  Future<void> _sendCode() async {
+    if (!_formKey.currentState!.validate()) return;
+    
+    setState(() => _isLoading = true);
+    
+    try {
+      // Get the identifier based on reset method
+      final identifier = _isPhoneReset 
+          ? '+${_selectedCountry.phoneCode}${_phoneController.text.trim()}'
+          : _emailController.text.trim();
+      
+      // Simulate API call
+      await Future.delayed(const Duration(seconds: 2));
+      
+      if (!mounted) return;
+      
+      setState(() => _codeSent = true);
+      
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        AppTheme.successSnackBar(
+          message: 'Reset code sent successfully to $identifier',
+        ),
+      );
+      
+      // Navigate to reset password screen
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ResetPasswordScreen(
+            identifier: identifier,
+            isPhone: _isPhoneReset,
+          ),
+        ),
+      );
+      
+    } catch (e) {
+      if (!mounted) return;
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        AppTheme.errorSnackBar(
+          message: 'Failed to send reset code. Please try again.',
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppTheme.backgroundColor,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimaryColor),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          'Reset Password',
+          style: AppTheme.titleLarge.copyWith(
+            color: AppTheme.textPrimaryColor,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: AnimatedBuilder(
           animation: _animationController,
@@ -195,43 +197,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const SizedBox(height: AppTheme.spacing32),
-                        
-                        // Logo and Welcome Text
+                        // Header
                         Column(
                           children: [
-                            // Tesla-inspired logo
-                            Container(
-                              width: 80,
-                              height: 80,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    AppTheme.primaryColor,
-                                    AppTheme.primaryVariant,
-                                  ],
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppTheme.primaryColor.withOpacity(0.3),
-                                    blurRadius: 15,
-                                    spreadRadius: 2,
-                                  ),
-                                ],
-                              ),
-                              child: const Icon(
-                                Icons.directions_car,
-                                size: 40,
-                                color: AppTheme.backgroundColor,
-                              ),
-                            ),
-                            const SizedBox(height: AppTheme.spacing24),
-                            
                             Text(
-                              'Welcome Back',
+                              'Forgot your password?',
                               style: AppTheme.headlineMedium.copyWith(
                                 color: AppTheme.textPrimaryColor,
                                 fontWeight: FontWeight.w700,
@@ -240,7 +210,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                             ),
                             const SizedBox(height: AppTheme.spacing8),
                             Text(
-                              'Sign in to continue your journey',
+                              "Enter your phone number or email and we'll send you a reset code.",
                               style: AppTheme.bodyLarge.copyWith(
                                 color: AppTheme.textSecondaryColor,
                               ),
@@ -251,7 +221,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         
                         const SizedBox(height: AppTheme.spacing32),
                         
-                        // Login Method Toggle
+                        // Reset Method Toggle
                         Container(
                           padding: const EdgeInsets.all(AppTheme.spacing4),
                           decoration: BoxDecoration(
@@ -268,7 +238,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 child: GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      _isPhoneLogin = true;
+                                      _isPhoneReset = true;
                                     });
                                   },
                                   child: Container(
@@ -277,7 +247,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                       horizontal: AppTheme.spacing16,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: _isPhoneLogin 
+                                      color: _isPhoneReset 
                                           ? AppTheme.primaryColor.withOpacity(0.2)
                                           : Colors.transparent,
                                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
@@ -287,7 +257,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                       children: [
                                         Icon(
                                           Icons.phone_outlined,
-                                          color: _isPhoneLogin 
+                                          color: _isPhoneReset 
                                               ? AppTheme.primaryColor
                                               : AppTheme.textSecondaryColor,
                                           size: 20,
@@ -296,10 +266,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                         Text(
                                           'Phone',
                                           style: AppTheme.bodyMedium.copyWith(
-                                            color: _isPhoneLogin 
+                                            color: _isPhoneReset 
                                                 ? AppTheme.primaryColor
                                                 : AppTheme.textSecondaryColor,
-                                            fontWeight: _isPhoneLogin 
+                                            fontWeight: _isPhoneReset 
                                                 ? FontWeight.w600 
                                                 : FontWeight.normal,
                                           ),
@@ -313,7 +283,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 child: GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      _isPhoneLogin = false;
+                                      _isPhoneReset = false;
                                     });
                                   },
                                   child: Container(
@@ -322,7 +292,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                       horizontal: AppTheme.spacing16,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: !_isPhoneLogin 
+                                      color: !_isPhoneReset 
                                           ? AppTheme.primaryColor.withOpacity(0.2)
                                           : Colors.transparent,
                                       borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
@@ -332,7 +302,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                       children: [
                                         Icon(
                                           Icons.email_outlined,
-                                          color: !_isPhoneLogin 
+                                          color: !_isPhoneReset 
                                               ? AppTheme.primaryColor
                                               : AppTheme.textSecondaryColor,
                                           size: 20,
@@ -341,10 +311,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                         Text(
                                           'Email',
                                           style: AppTheme.bodyMedium.copyWith(
-                                            color: !_isPhoneLogin 
+                                            color: !_isPhoneReset 
                                                 ? AppTheme.primaryColor
                                                 : AppTheme.textSecondaryColor,
-                                            fontWeight: !_isPhoneLogin 
+                                            fontWeight: !_isPhoneReset 
                                                 ? FontWeight.w600 
                                                 : FontWeight.normal,
                                           ),
@@ -361,14 +331,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         const SizedBox(height: AppTheme.spacing16),
                         
                         // Email or Phone Input Field
-                        if (!_isPhoneLogin) ...[
+                        if (!_isPhoneReset) ...[
                           // Email Field
                           CustomTextField(
                             label: 'Email Address',
-                            hint: 'Enter your email',
+                            hint: 'Enter your email address',
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
+                            textInputAction: TextInputAction.done,
                             prefixIcon: const Icon(
                               Icons.email_outlined,
                               color: AppTheme.textSecondaryColor,
@@ -435,7 +405,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                   child: TextFormField(
                                     controller: _phoneController,
                                     keyboardType: TextInputType.phone,
-                                    textInputAction: TextInputAction.next,
+                                    textInputAction: TextInputAction.done,
                                     inputFormatters: [
                                       PhoneInputFormatter(),
                                     ],
@@ -496,132 +466,38 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           ),
                         ],
                         
-                        const SizedBox(height: AppTheme.spacing16),
-                        
-                        // Password Field
-                        CustomTextField(
-                          label: 'Password',
-                          hint: 'Enter your password',
-                          controller: _passwordController,
-                          obscureText: !_isPasswordVisible,
-                          textInputAction: TextInputAction.done,
-                          prefixIcon: const Icon(
-                            Icons.lock_outline,
-                            color: AppTheme.textSecondaryColor,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _isPasswordVisible
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              color: AppTheme.textSecondaryColor,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _isPasswordVisible = !_isPasswordVisible;
-                              });
-                            },
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
-                            }
-                            if (value.length < 6) {
-                              return 'Password must be at least 6 characters';
-                            }
-                            return null;
-                          },
-                        ),
-                        
-                        const SizedBox(height: AppTheme.spacing12),
-                        
-                        // Remember Me and Forgot Password
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Checkbox(
-                                  value: _rememberMe,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _rememberMe = value ?? false;
-                                    });
-                                  },
-                                  activeColor: AppTheme.primaryColor,
-                                  checkColor: AppTheme.backgroundColor,
-                                ),
-                                Text(
-                                  'Remember me',
-                                  style: AppTheme.bodyMedium.copyWith(
-                                    color: AppTheme.textSecondaryColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            TextButton(
-                              onPressed: _navigateToForgotPassword,
-                              child: Text(
-                                'Forgot Password?',
-                                style: AppTheme.bodyMedium.copyWith(
-                                  color: AppTheme.primaryColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        
                         const SizedBox(height: AppTheme.spacing32),
                         
-                        // Login Button
+                        // Send Code Button
                         PrimaryButton(
-                          label: 'Sign In',
+                          label: 'Send Reset Code',
                           isLoading: _isLoading,
-                          onPressed: _isLoading ? null : _handleLogin,
-                          icon: Icons.arrow_forward,
+                          onPressed: _isLoading ? null : _sendCode,
+                          icon: Icons.send,
                         ),
                         
                         const SizedBox(height: AppTheme.spacing24),
                         
-                        // Divider
-                        Row(
-                          children: [
-                            const Expanded(
-                              child: Divider(color: AppTheme.dividerColor),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppTheme.spacing16,
-                              ),
-                              child: Text(
-                                'OR',
-                                style: AppTheme.bodySmall.copyWith(
-                                  color: AppTheme.textTertiaryColor,
-                                ),
-                              ),
-                            ),
-                            const Expanded(
-                              child: Divider(color: AppTheme.dividerColor),
-                            ),
-                          ],
-                        ),
-                        
-                        const SizedBox(height: AppTheme.spacing24),
-                        
-                        // Sign Up Link
+                        // Back to Login
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Don\'t have an account? ',
+                              'Remember your password? ',
                               style: AppTheme.bodyMedium.copyWith(
                                 color: AppTheme.textSecondaryColor,
                               ),
                             ),
                             TextButton(
-                              onPressed: _navigateToSignUp,
+                              onPressed: () {
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginScreen(),
+                                  ),
+                                );
+                              },
                               child: Text(
-                                'Sign Up',
+                                'Sign In',
                                 style: AppTheme.bodyMedium.copyWith(
                                   color: AppTheme.primaryColor,
                                   fontWeight: FontWeight.w600,
@@ -630,8 +506,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                             ),
                           ],
                         ),
-                        
-                        const SizedBox(height: AppTheme.spacing32),
                       ],
                     ),
                   ),
