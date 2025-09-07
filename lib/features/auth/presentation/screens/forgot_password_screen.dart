@@ -454,9 +454,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
                                       if (value == null || value.isEmpty) {
                                         return 'Please enter your phone number';
                                       }
-                                      if (value.length < 10) {
-                                        return 'Please enter a valid phone number';
-                                      }
                                       return null;
                                     },
                                   ),
