@@ -23,7 +23,7 @@ class RiderHomeTab extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications_outlined, color: AppTheme.textPrimaryColor),
             onPressed: () {
-              // TODO: Navigate to notifications
+              Navigator.pushNamed(context, '/notifications');
             },
           ),
         ],
@@ -96,7 +96,7 @@ class RiderHomeTab extends StatelessWidget {
                       title: 'Find Ride',
                       subtitle: 'Book a ride',
                       onTap: () {
-                        // TODO: Navigate to find ride
+                        // Find ride is already the current tab, no navigation needed
                       },
                     ),
                   ),
@@ -107,7 +107,7 @@ class RiderHomeTab extends StatelessWidget {
                       title: 'Recent Rides',
                       subtitle: 'View history',
                       onTap: () {
-                        // TODO: Navigate to history
+                        Navigator.pushNamed(context, '/recent-activities');
                       },
                     ),
                   ),
@@ -126,38 +126,52 @@ class RiderHomeTab extends StatelessWidget {
               ),
               const SizedBox(height: AppTheme.spacing16),
               
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(AppTheme.spacing20),
-                decoration: BoxDecoration(
-                  color: AppTheme.surfaceColor,
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
-                  border: Border.all(color: AppTheme.borderColor),
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.directions_car_outlined,
-                      size: 48,
-                      color: AppTheme.textSecondaryColor,
-                    ),
-                    const SizedBox(height: AppTheme.spacing16),
-                    Text(
-                      'No recent rides',
-                      style: AppTheme.bodyLarge.copyWith(
-                        color: AppTheme.textPrimaryColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: AppTheme.spacing8),
-                    Text(
-                      'Your ride history will appear here',
-                      style: AppTheme.bodyMedium.copyWith(
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, '/recent-activities');
+                },
+                borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppTheme.spacing20),
+                  decoration: BoxDecoration(
+                    color: AppTheme.surfaceColor,
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                    border: Border.all(color: AppTheme.borderColor),
+                  ),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.directions_car_outlined,
+                        size: 48,
                         color: AppTheme.textSecondaryColor,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                      const SizedBox(height: AppTheme.spacing16),
+                      Text(
+                        'No recent rides',
+                        style: AppTheme.bodyLarge.copyWith(
+                          color: AppTheme.textPrimaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: AppTheme.spacing8),
+                      Text(
+                        'Your ride history will appear here',
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: AppTheme.textSecondaryColor,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppTheme.spacing12),
+                      Text(
+                        'Tap to view all activities',
+                        style: AppTheme.bodySmall.copyWith(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

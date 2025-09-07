@@ -4,6 +4,8 @@ import 'core/theme/app_theme.dart';
 import 'core/config/app_config.dart';
 import 'features/splash/presentation/screens/splash_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
+import 'features/rider/presentation/screens/notifications_screen.dart';
+import 'features/rider/presentation/screens/recent_activities_screen.dart';
 
 void main() {
   runApp(
@@ -25,6 +27,8 @@ class KivuRideApp extends StatelessWidget {
       home: const SplashScreen(),
       routes: {
         '/login': (context) => const LoginScreen(),
+        '/notifications': (context) => const NotificationsScreen(),
+        '/recent-activities': (context) => const RecentActivitiesScreen(),
       },
     );
   }
