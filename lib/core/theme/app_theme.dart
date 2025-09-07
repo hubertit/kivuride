@@ -366,4 +366,30 @@ class AppTheme {
           : null,
     );
   }
+
+  static SnackBar infoSnackBar({
+    required String message,
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
+    return SnackBar(
+      content: Text(
+        message,
+        style: bodyMedium.copyWith(color: textPrimaryColor),
+      ),
+      backgroundColor: infoColor,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(borderRadius12),
+      ),
+      margin: const EdgeInsets.all(spacing16),
+      action: actionLabel != null
+          ? SnackBarAction(
+              label: actionLabel,
+              textColor: textPrimaryColor,
+              onPressed: onAction ?? () {},
+            )
+          : null,
+    );
+  }
 }

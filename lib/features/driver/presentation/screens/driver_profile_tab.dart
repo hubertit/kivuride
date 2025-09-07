@@ -1,11 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/config/mock_credentials.dart';
+import '../../../../shared/widgets/profile_avatar.dart';
+import '../../../../shared/widgets/profile_menu_item.dart';
+import '../../../../shared/widgets/profile_stats_card.dart';
 
-class DriverProfileTab extends StatelessWidget {
+class DriverProfileTab extends ConsumerStatefulWidget {
   const DriverProfileTab({super.key});
 
   @override
+  ConsumerState<DriverProfileTab> createState() => _DriverProfileTabState();
+}
+
+class _DriverProfileTabState extends ConsumerState<DriverProfileTab> {
+  // Mock user data - in real app, this would come from state management
+  final userData = MockCredentials.driverAccount;
+
+  @override
   Widget build(BuildContext context) {
+    final profile = userData['profile'] as Map<String, dynamic>;
+    final vehicleInfo = profile['vehicleInfo'] as Map<String, dynamic>;
+
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
@@ -18,37 +34,434 @@ class DriverProfileTab extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined, color: AppTheme.textPrimaryColor),
+            onPressed: () {
+              _showSettings(context);
+            },
+          ),
+        ],
       ),
       body: SafeArea(
-        child: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppTheme.spacing24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.person,
-                size: 64,
-                color: AppTheme.textSecondaryColor,
+              // Profile Header
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppTheme.spacing24),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppTheme.primaryColor.withOpacity(0.1),
+                      AppTheme.primaryColor.withOpacity(0.05),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
+                  border: Border.all(
+                    color: AppTheme.primaryColor.withOpacity(0.2),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    ProfileAvatar(
+                      name: userData['name'] as String,
+                      subtitle: 'Driver',
+                      showEditButton: true,
+                      onEditPressed: () {
+                        _editProfile(context);
+                      },
+                    ),
+                    const SizedBox(height: AppTheme.spacing16),
+                    Text(
+                      userData['name'] as String,
+                      style: AppTheme.titleLarge.copyWith(
+                        color: AppTheme.textPrimaryColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: AppTheme.spacing4),
+                    Text(
+                      userData['email'] as String,
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: AppTheme.textSecondaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: AppTheme.spacing8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.spacing12,
+                        vertical: AppTheme.spacing4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryColor.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.star,
+                            color: AppTheme.primaryColor,
+                            size: 16,
+                          ),
+                          const SizedBox(width: AppTheme.spacing4),
+                          Text(
+                            '4.9',
+                            style: AppTheme.bodySmall.copyWith(
+                              color: AppTheme.primaryColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: AppTheme.spacing16),
+
+              const SizedBox(height: AppTheme.spacing24),
+
+              // Vehicle Information
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppTheme.spacing20),
+                decoration: BoxDecoration(
+                  color: AppTheme.surfaceColor,
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                  border: Border.all(color: AppTheme.borderColor),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.directions_car,
+                          color: AppTheme.primaryColor,
+                          size: 20,
+                        ),
+                        const SizedBox(width: AppTheme.spacing8),
+                        Text(
+                          'Vehicle Information',
+                          style: AppTheme.titleSmall.copyWith(
+                            color: AppTheme.textPrimaryColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppTheme.spacing12),
+                    _buildVehicleInfoRow('Make & Model', '${vehicleInfo['make']} ${vehicleInfo['model']}'),
+                    _buildVehicleInfoRow('Year', vehicleInfo['year'].toString()),
+                    _buildVehicleInfoRow('Color', vehicleInfo['color']),
+                    _buildVehicleInfoRow('Plate Number', vehicleInfo['plateNumber']),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: AppTheme.spacing24),
+
+              // Stats Section
               Text(
-                'Driver Profile',
-                style: AppTheme.headlineMedium.copyWith(
+                'Your Stats',
+                style: AppTheme.titleMedium.copyWith(
                   color: AppTheme.textPrimaryColor,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: AppTheme.spacing8),
-              Text(
-                'Manage your driver account and vehicle information',
-                style: AppTheme.bodyLarge.copyWith(
-                  color: AppTheme.textSecondaryColor,
-                ),
-                textAlign: TextAlign.center,
+              const SizedBox(height: AppTheme.spacing16),
+              Row(
+                children: [
+                  Expanded(
+                    child: ProfileStatsCard(
+                      title: 'Total Rides',
+                      value: '156',
+                      icon: Icons.directions_car,
+                      onTap: () {
+                        // TODO: Navigate to ride history
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: AppTheme.spacing12),
+                  Expanded(
+                    child: ProfileStatsCard(
+                      title: 'Rating',
+                      value: '4.9',
+                      icon: Icons.star,
+                      iconColor: AppTheme.warningColor,
+                      onTap: () {
+                        // TODO: Show rating details
+                      },
+                    ),
+                  ),
+                ],
               ),
+
+              const SizedBox(height: AppTheme.spacing16),
+              Row(
+                children: [
+                  Expanded(
+                    child: ProfileStatsCard(
+                      title: 'Member Since',
+                      value: 'Nov 2023',
+                      icon: Icons.calendar_today,
+                      onTap: () {
+                        // TODO: Show account details
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: AppTheme.spacing12),
+                  Expanded(
+                    child: ProfileStatsCard(
+                      title: 'License',
+                      value: 'Valid',
+                      icon: Icons.verified,
+                      iconColor: AppTheme.successColor,
+                      onTap: () {
+                        // TODO: Show license details
+                      },
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: AppTheme.spacing32),
+
+              // Menu Items
+              Text(
+                'Account',
+                style: AppTheme.titleMedium.copyWith(
+                  color: AppTheme.textPrimaryColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: AppTheme.spacing16),
+
+              ProfileMenuItem(
+                icon: Icons.person_outline,
+                title: 'Edit Profile',
+                subtitle: 'Update your personal information',
+                onTap: () => _editProfile(context),
+              ),
+
+              ProfileMenuItem(
+                icon: Icons.directions_car,
+                title: 'Vehicle Details',
+                subtitle: 'Manage your vehicle information',
+                onTap: () {
+                  // TODO: Navigate to vehicle details
+                },
+              ),
+
+              ProfileMenuItem(
+                icon: Icons.credit_card,
+                title: 'Payment & Earnings',
+                subtitle: 'View earnings and payment methods',
+                onTap: () {
+                  // TODO: Navigate to earnings
+                },
+              ),
+
+              ProfileMenuItem(
+                icon: Icons.history,
+                title: 'Ride History',
+                subtitle: 'View all your completed rides',
+                onTap: () {
+                  // TODO: Navigate to ride history
+                },
+              ),
+
+              ProfileMenuItem(
+                icon: Icons.verified_user,
+                title: 'Documents',
+                subtitle: 'License and insurance documents',
+                onTap: () {
+                  // TODO: Navigate to documents
+                },
+              ),
+
+              const SizedBox(height: AppTheme.spacing24),
+
+              Text(
+                'Support',
+                style: AppTheme.titleMedium.copyWith(
+                  color: AppTheme.textPrimaryColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: AppTheme.spacing16),
+
+              ProfileMenuItem(
+                icon: Icons.help_outline,
+                title: 'Help Center',
+                subtitle: 'Get help and support',
+                onTap: () {
+                  // TODO: Navigate to help center
+                },
+              ),
+
+              ProfileMenuItem(
+                icon: Icons.contact_support_outlined,
+                title: 'Contact Us',
+                subtitle: 'Reach out to our support team',
+                onTap: () {
+                  // TODO: Navigate to contact us
+                },
+              ),
+
+              ProfileMenuItem(
+                icon: Icons.info_outline,
+                title: 'About KivuRide',
+                subtitle: 'App version and information',
+                onTap: () {
+                  // TODO: Show about dialog
+                },
+              ),
+
+              const SizedBox(height: AppTheme.spacing24),
+
+              // Logout Button
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: AppTheme.errorColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                  border: Border.all(
+                    color: AppTheme.errorColor.withOpacity(0.3),
+                  ),
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.spacing16,
+                    vertical: AppTheme.spacing8,
+                  ),
+                  leading: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppTheme.errorColor.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
+                    ),
+                    child: const Icon(
+                      Icons.logout,
+                      color: AppTheme.errorColor,
+                      size: 20,
+                    ),
+                  ),
+                  title: Text(
+                    'Sign Out',
+                    style: AppTheme.bodyLarge.copyWith(
+                      color: AppTheme.errorColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  onTap: () {
+                    _showLogoutDialog(context);
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: AppTheme.spacing32),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildVehicleInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppTheme.spacing8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: AppTheme.bodyMedium.copyWith(
+              color: AppTheme.textSecondaryColor,
+            ),
+          ),
+          Text(
+            value,
+            style: AppTheme.bodyMedium.copyWith(
+              color: AppTheme.textPrimaryColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _editProfile(BuildContext context) {
+    // TODO: Navigate to edit profile screen
+    ScaffoldMessenger.of(context).showSnackBar(
+      AppTheme.infoSnackBar(message: 'Edit profile feature coming soon!'),
+    );
+  }
+
+  void _showSettings(BuildContext context) {
+    // TODO: Navigate to settings screen
+    ScaffoldMessenger.of(context).showSnackBar(
+      AppTheme.infoSnackBar(message: 'Settings feature coming soon!'),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppTheme.surfaceColor,
+          title: Text(
+            'Sign Out',
+            style: AppTheme.titleMedium.copyWith(
+              color: AppTheme.textPrimaryColor,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to sign out?',
+            style: AppTheme.bodyMedium.copyWith(
+              color: AppTheme.textSecondaryColor,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.textSecondaryColor,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // TODO: Implement logout logic
+                ScaffoldMessenger.of(context).showSnackBar(
+                  AppTheme.successSnackBar(message: 'Signed out successfully!'),
+                );
+              },
+              child: Text(
+                'Sign Out',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.errorColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
