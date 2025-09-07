@@ -9,6 +9,8 @@ import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/utils/phone_input_formatter.dart';
 import 'signup_screen.dart';
 import 'forgot_password_screen.dart';
+import '../../../rider/presentation/screens/rider_home_screen.dart';
+import '../../../driver/presentation/screens/driver_home_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -118,7 +120,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           ),
         );
         
-        // TODO: Navigate to appropriate home screen based on account type
+        // Navigate to appropriate home screen based on account type
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (!mounted) return;
+        
+        if (accountType == 'rider') {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const RiderHomeScreen()),
+            (route) => false,
+          );
+        } else {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const DriverHomeScreen()),
+            (route) => false,
+          );
+        }
+        
         print('Login successful for: $userName ($accountType)');
         print('User data: $userAccount');
         
