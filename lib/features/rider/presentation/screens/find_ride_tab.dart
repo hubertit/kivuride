@@ -324,54 +324,74 @@ class _FindRideTabState extends ConsumerState<FindRideTab>
                         bottom: AppTheme.spacing16,
                         left: AppTheme.spacing16,
                         right: AppTheme.spacing16,
-                        child: Container(
-                          padding: const EdgeInsets.all(AppTheme.spacing16),
-                          decoration: BoxDecoration(
-                            color: AppTheme.surfaceColor,
-                            borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
-                            border: Border.all(color: AppTheme.borderColor),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.directions_car,
-                                color: AppTheme.primaryColor,
-                                size: 24,
-                              ),
-                              const SizedBox(width: AppTheme.spacing12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${_mockCabs.length} rides available',
-                                      style: AppTheme.titleSmall.copyWith(
-                                        color: AppTheme.textPrimaryColor,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Tap on a car icon to see details',
-                                      style: AppTheme.bodySmall.copyWith(
-                                        color: AppTheme.textSecondaryColor,
-                                      ),
-                                    ),
-                                  ],
+                        child: InkWell(
+                          onTap: () {
+                            if (_departureController.text.isEmpty || _destinationController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                AppTheme.errorSnackBar(message: 'Please enter both departure and destination first'),
+                              );
+                              return;
+                            }
+                            
+                            Navigator.pushNamed(
+                              context,
+                              '/ride-selection',
+                              arguments: {
+                                'departure': _departureController.text,
+                                'destination': _destinationController.text,
+                              },
+                            );
+                          },
+                          borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                          child: Container(
+                            padding: const EdgeInsets.all(AppTheme.spacing16),
+                            decoration: BoxDecoration(
+                              color: AppTheme.surfaceColor,
+                              borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
+                              border: Border.all(color: AppTheme.borderColor),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
                                 ),
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                color: AppTheme.textSecondaryColor,
-                                size: 16,
-                              ),
-                            ],
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.directions_car,
+                                  color: AppTheme.primaryColor,
+                                  size: 24,
+                                ),
+                                const SizedBox(width: AppTheme.spacing12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${_mockCabs.length} rides available',
+                                        style: AppTheme.titleSmall.copyWith(
+                                          color: AppTheme.textPrimaryColor,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Tap to see details and select',
+                                        style: AppTheme.bodySmall.copyWith(
+                                          color: AppTheme.textSecondaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: AppTheme.textSecondaryColor,
+                                  size: 16,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

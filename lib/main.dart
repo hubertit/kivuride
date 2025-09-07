@@ -30,6 +30,13 @@ class KivuRideApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/notifications': (context) => const NotificationsScreen(),
         '/recent-activities': (context) => const RecentActivitiesScreen(),
+        '/ride-selection': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+          return RideSelectionScreen(
+            departure: args['departure']!,
+            destination: args['destination']!,
+          );
+        },
       },
     );
   }
