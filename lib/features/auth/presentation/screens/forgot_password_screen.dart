@@ -27,7 +27,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
   late Animation<Offset> _slideAnimation;
   
   bool _isLoading = false;
-  bool _codeSent = false;
   bool _isPhoneReset = true; // Default to phone reset
   
   // Country picker for phone reset
@@ -130,7 +129,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
       
       if (!mounted) return;
       
-      setState(() => _codeSent = true);
+      // Code sent successfully
       
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(

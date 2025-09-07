@@ -27,6 +27,7 @@ class AppTheme {
   // Spacing System (8pt grid)
   static const double spacing2 = 2.0;
   static const double spacing4 = 4.0;
+  static const double spacing6 = 6.0;
   static const double spacing8 = 8.0;
   static const double spacing12 = 12.0;
   static const double spacing16 = 16.0;
@@ -39,6 +40,7 @@ class AppTheme {
 
   // Border Radius
   static const double borderRadius4 = 4.0;
+  static const double borderRadius6 = 6.0;
   static const double borderRadius8 = 8.0;
   static const double borderRadius12 = 12.0;
   static const double borderRadius16 = 16.0;
