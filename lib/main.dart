@@ -6,6 +6,7 @@ import 'features/splash/presentation/screens/splash_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/rider/presentation/screens/notifications_screen.dart';
 import 'features/rider/presentation/screens/recent_activities_screen.dart';
+import 'features/rider/presentation/screens/ride_selection_screen.dart';
 
 void main() {
   runApp(
