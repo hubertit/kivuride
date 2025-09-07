@@ -7,11 +7,13 @@ import '../../../../shared/widgets/primary_button.dart';
 class RideSelectionScreen extends ConsumerStatefulWidget {
   final String departure;
   final String destination;
+  final String rideType;
   
   const RideSelectionScreen({
     super.key,
     required this.departure,
     required this.destination,
+    required this.rideType,
   });
 
   @override
@@ -145,18 +147,22 @@ class _RideSelectionScreenState extends ConsumerState<RideSelectionScreen>
       return;
     }
 
-    setState(() => _isLoading = true);
+    final selectedRide = _availableRides[_selectedRideIndex];
     
-    // Simulate ride confirmation
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          AppTheme.successSnackBar(message: 'Ride confirmed! Driver is on the way.'),
-        );
-        Navigator.pop(context);
-      }
-    });
+    // Navigate to payment selection screen
+    Navigator.pushNamed(
+      context,
+      '/payment-selection',
+      arguments: {
+        'departure': widget.departure,
+        'destination': widget.destination,
+        'rideType': widget.rideType,
+        'driverName': selectedRide['driver'],
+        'carModel': selectedRide['car'],
+        'plateNumber': selectedRide['plate'],
+        'totalPrice': selectedRide['totalPrice'],
+      },
+    );
   }
 
   Widget _buildRideCard(Map<String, dynamic> ride, int index) {

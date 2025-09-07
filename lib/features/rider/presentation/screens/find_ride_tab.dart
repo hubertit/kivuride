@@ -5,6 +5,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/config/app_config.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/widgets/primary_button.dart';
+import '../../../../shared/widgets/ride_type_selector.dart';
 
 class FindRideTab extends ConsumerStatefulWidget {
   const FindRideTab({super.key});
@@ -26,6 +27,7 @@ class _FindRideTabState extends ConsumerState<FindRideTab>
   LatLng _center = const LatLng(-1.9441, 30.0619); // Kigali, Rwanda
   Set<Marker> _markers = {};
   bool _isLoading = false;
+  String _selectedRideType = 'standard';
 
   // Mock cab locations around Kigali
   final List<Map<String, dynamic>> _mockCabs = [
@@ -195,6 +197,18 @@ class _FindRideTabState extends ConsumerState<FindRideTab>
                   ),
                   child: Column(
                     children: [
+                      // Ride Type Selector
+                      RideTypeSelector(
+                        selectedRideType: _selectedRideType,
+                        onRideTypeSelected: (rideType) {
+                          setState(() {
+                            _selectedRideType = rideType;
+                          });
+                        },
+                      ),
+                      
+                      const SizedBox(height: AppTheme.spacing20),
+                      
                       // Departure Field
                       CustomTextField(
                         label: 'From',
@@ -339,6 +353,7 @@ class _FindRideTabState extends ConsumerState<FindRideTab>
                               arguments: {
                                 'departure': _departureController.text,
                                 'destination': _destinationController.text,
+                                'rideType': _selectedRideType,
                               },
                             );
                           },

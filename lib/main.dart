@@ -7,6 +7,7 @@ import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/rider/presentation/screens/notifications_screen.dart';
 import 'features/rider/presentation/screens/recent_activities_screen.dart';
 import 'features/rider/presentation/screens/ride_selection_screen.dart';
+import 'features/rider/presentation/screens/payment_selection_screen.dart';
 
 void main() {
   runApp(
@@ -35,6 +36,19 @@ class KivuRideApp extends StatelessWidget {
           return RideSelectionScreen(
             departure: args['departure']!,
             destination: args['destination']!,
+            rideType: args['rideType']!,
+          );
+        },
+        '/payment-selection': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return PaymentSelectionScreen(
+            departure: args['departure'] as String,
+            destination: args['destination'] as String,
+            rideType: args['rideType'] as String,
+            driverName: args['driverName'] as String,
+            carModel: args['carModel'] as String,
+            plateNumber: args['plateNumber'] as String,
+            totalPrice: args['totalPrice'] as int,
           );
         },
       },
