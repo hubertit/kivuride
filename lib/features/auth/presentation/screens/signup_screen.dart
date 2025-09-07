@@ -31,7 +31,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
   bool _isConfirmPasswordVisible = false;
   bool _isLoading = false;
   bool _acceptTerms = false;
-  String _selectedAccountType = 'rider'; // Default to rider
   
   // Country picker for phone registration
   Country _selectedCountry = Country(
@@ -141,7 +140,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
         'email': _emailController.text.trim(),
         'phone': '+${_selectedCountry.phoneCode}${_phoneController.text.trim()}',
         'password': _passwordController.text,
-        'accountType': _selectedAccountType,
+        'accountType': 'rider', // All registrations are for riders
       };
       
       // TODO: Send accountData to API
@@ -153,10 +152,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
       if (!mounted) return;
       
       // Show success message
-      final accountTypeText = _selectedAccountType == 'rider' ? 'Rider' : 'Driver';
       ScaffoldMessenger.of(context).showSnackBar(
         AppTheme.successSnackBar(
-          message: '$accountTypeText account created successfully! Welcome to KivuRide.',
+          message: 'Rider account created successfully! Welcome to KivuRide.',
         ),
       );
       
@@ -190,7 +188,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Create Account',
+          'Create Rider Account',
           style: AppTheme.titleLarge.copyWith(
             color: AppTheme.textPrimaryColor,
           ),
@@ -232,133 +230,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                                 color: AppTheme.textSecondaryColor,
                               ),
                               textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                        
-                        const SizedBox(height: AppTheme.spacing32),
-                        
-                        // Account Type Selection
-                        Text(
-                          'Choose Account Type',
-                          style: AppTheme.titleMedium.copyWith(
-                            color: AppTheme.textPrimaryColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: AppTheme.spacing16),
-                        
-                        // Account Type Cards
-                        Row(
-                          children: [
-                            // Rider Card
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _selectedAccountType = 'rider';
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(AppTheme.spacing16),
-                                  decoration: BoxDecoration(
-                                    color: _selectedAccountType == 'rider'
-                                        ? AppTheme.primaryColor.withOpacity(0.1)
-                                        : AppTheme.surfaceColor,
-                                    borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
-                                    border: Border.all(
-                                      color: _selectedAccountType == 'rider'
-                                          ? AppTheme.primaryColor
-                                          : AppTheme.borderColor,
-                                      width: _selectedAccountType == 'rider' ? 2 : 1,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Icon(
-                                        Icons.person,
-                                        size: 32,
-                                        color: _selectedAccountType == 'rider'
-                                            ? AppTheme.primaryColor
-                                            : AppTheme.textSecondaryColor,
-                                      ),
-                                      const SizedBox(height: AppTheme.spacing8),
-                                      Text(
-                                        'Rider',
-                                        style: AppTheme.titleSmall.copyWith(
-                                          color: _selectedAccountType == 'rider'
-                                              ? AppTheme.primaryColor
-                                              : AppTheme.textPrimaryColor,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      const SizedBox(height: AppTheme.spacing4),
-                                      Text(
-                                        'Request rides',
-                                        style: AppTheme.bodySmall.copyWith(
-                                          color: AppTheme.textSecondaryColor,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: AppTheme.spacing12),
-                            // Driver Card
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _selectedAccountType = 'driver';
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(AppTheme.spacing16),
-                                  decoration: BoxDecoration(
-                                    color: _selectedAccountType == 'driver'
-                                        ? AppTheme.primaryColor.withOpacity(0.1)
-                                        : AppTheme.surfaceColor,
-                                    borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
-                                    border: Border.all(
-                                      color: _selectedAccountType == 'driver'
-                                          ? AppTheme.primaryColor
-                                          : AppTheme.borderColor,
-                                      width: _selectedAccountType == 'driver' ? 2 : 1,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Icon(
-                                        Icons.directions_car,
-                                        size: 32,
-                                        color: _selectedAccountType == 'driver'
-                                            ? AppTheme.primaryColor
-                                            : AppTheme.textSecondaryColor,
-                                      ),
-                                      const SizedBox(height: AppTheme.spacing8),
-                                      Text(
-                                        'Driver',
-                                        style: AppTheme.titleSmall.copyWith(
-                                          color: _selectedAccountType == 'driver'
-                                              ? AppTheme.primaryColor
-                                              : AppTheme.textPrimaryColor,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      const SizedBox(height: AppTheme.spacing4),
-                                      Text(
-                                        'Provide rides',
-                                        style: AppTheme.bodySmall.copyWith(
-                                          color: AppTheme.textSecondaryColor,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
                             ),
                           ],
                         ),
@@ -650,7 +521,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                         
                         // Sign Up Button
                         PrimaryButton(
-                          label: 'Create Account',
+                          label: 'Create Rider Account',
                           isLoading: _isLoading,
                           onPressed: _isLoading ? null : _handleSignUp,
                           icon: Icons.person_add,
