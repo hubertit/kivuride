@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/config/app_config.dart';
 import '../../../../shared/widgets/primary_button.dart';
+import '../../../../shared/widgets/ride_type_selector.dart';
 
 class RideSelectionScreen extends ConsumerStatefulWidget {
   final String departure;
@@ -28,6 +29,7 @@ class _RideSelectionScreenState extends ConsumerState<RideSelectionScreen>
   
   int _selectedRideIndex = -1;
   bool _isLoading = false;
+  String _selectedRideType = '';
 
   // Mock available rides data
   final List<Map<String, dynamic>> _availableRides = [
@@ -102,6 +104,7 @@ class _RideSelectionScreenState extends ConsumerState<RideSelectionScreen>
     super.initState();
     _initializeAnimations();
     _animationController.forward();
+    _selectedRideType = widget.rideType; // Initialize with passed ride type
   }
 
   void _initializeAnimations() {
@@ -140,6 +143,13 @@ class _RideSelectionScreenState extends ConsumerState<RideSelectionScreen>
   }
 
   void _confirmRide() {
+    if (_selectedRideType.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        AppTheme.errorSnackBar(message: 'Please select a ride type first'),
+      );
+      return;
+    }
+    
     if (_selectedRideIndex == -1) {
       ScaffoldMessenger.of(context).showSnackBar(
         AppTheme.errorSnackBar(message: 'Please select a ride first'),
@@ -156,7 +166,7 @@ class _RideSelectionScreenState extends ConsumerState<RideSelectionScreen>
       arguments: {
         'departure': widget.departure,
         'destination': widget.destination,
-        'rideType': widget.rideType,
+        'rideType': _selectedRideType,
         'driverName': selectedRide['driver'],
         'carModel': selectedRide['car'],
         'plateNumber': selectedRide['plate'],
@@ -429,6 +439,22 @@ class _RideSelectionScreenState extends ConsumerState<RideSelectionScreen>
                     ],
                   ),
                 ),
+                
+                // Ride Type Selector
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacing12),
+                  child: RideTypeSelector(
+                    selectedRideType: _selectedRideType,
+                    onRideTypeSelected: (rideType) {
+                      setState(() {
+                        _selectedRideType = rideType;
+                        _selectedRideIndex = -1; // Reset ride selection when ride type changes
+                      });
+                    },
+                  ),
+                ),
+                
+                const SizedBox(height: AppTheme.spacing16),
                 
                 // Available rides count
                 Padding(
