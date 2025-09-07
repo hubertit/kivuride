@@ -22,8 +22,8 @@ class _RiderHomeScreenState extends ConsumerState<RiderHomeScreen>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
-  final List<Widget> _tabs = [
-    const RiderHomeTab(),
+  List<Widget> get _tabs => [
+    RiderHomeTab(onNavigateToFindRide: () => _onTabTapped(1)),
     const FindRideTab(),
     const RiderHistoryTab(),
     const RiderProfileTab(),

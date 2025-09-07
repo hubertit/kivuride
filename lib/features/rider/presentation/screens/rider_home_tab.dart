@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 
 class RiderHomeTab extends StatelessWidget {
-  const RiderHomeTab({super.key});
+  final VoidCallback? onNavigateToFindRide;
+  
+  const RiderHomeTab({super.key, this.onNavigateToFindRide});
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +98,9 @@ class RiderHomeTab extends StatelessWidget {
                       title: 'Find Ride',
                       subtitle: 'Book a ride',
                       onTap: () {
-                        // Find ride is already the current tab, no navigation needed
+                        if (onNavigateToFindRide != null) {
+                          onNavigateToFindRide!();
+                        }
                       },
                     ),
                   ),
