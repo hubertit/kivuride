@@ -186,7 +186,6 @@ class _FindRideTabSimpleState extends ConsumerState<FindRideTabSimple>
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    margin: const EdgeInsets.all(AppTheme.spacing12),
                     decoration: BoxDecoration(
                       color: AppTheme.surfaceColor,
                       borderRadius: BorderRadius.circular(AppTheme.borderRadius12),
