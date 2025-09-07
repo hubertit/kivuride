@@ -28,7 +28,6 @@ class _FindRideTabState extends ConsumerState<FindRideTab>
   Set<Marker> _markers = {};
   bool _isLoading = false;
   String _selectedRideType = '';
-  bool _showRideTypeSelection = false;
 
   // Mock cab locations around Kigali
   final List<Map<String, dynamic>> _mockCabs = [
@@ -134,9 +133,24 @@ class _FindRideTabState extends ConsumerState<FindRideTab>
       return;
     }
 
-    // Show ride type selection
+    if (_selectedRideType.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        AppTheme.errorSnackBar(message: 'Please select a ride type first'),
+      );
+      return;
+    }
+
+    // Simulate search
     setState(() {
-      _showRideTypeSelection = true;
+      _isLoading = true;
+    });
+
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     });
   }
 

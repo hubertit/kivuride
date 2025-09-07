@@ -67,7 +67,7 @@ class RideTypeSelector extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.spacing8,
-                      vertical: AppTheme.spacing10,
+                      vertical: AppTheme.spacing8,
                     ),
                     decoration: BoxDecoration(
                       color: isSelected 
