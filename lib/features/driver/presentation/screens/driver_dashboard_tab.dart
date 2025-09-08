@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 
-class DriverDashboardTab extends StatelessWidget {
+class DriverDashboardTab extends StatefulWidget {
   const DriverDashboardTab({super.key});
+
+  @override
+  State<DriverDashboardTab> createState() => _DriverDashboardTabState();
+}
+
+class _DriverDashboardTabState extends State<DriverDashboardTab> {
+  bool _isOnline = true;
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +52,21 @@ class DriverDashboardTab extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [
-                      AppTheme.primaryColor.withOpacity(0.1),
-                      AppTheme.primaryColor.withOpacity(0.05),
-                    ],
+                    colors: _isOnline
+                        ? [
+                            AppTheme.successColor.withOpacity(0.1),
+                            AppTheme.successColor.withOpacity(0.05),
+                          ]
+                        : [
+                            AppTheme.errorColor.withOpacity(0.1),
+                            AppTheme.errorColor.withOpacity(0.05),
+                          ],
                   ),
                   borderRadius: BorderRadius.circular(AppTheme.borderRadius16),
                   border: Border.all(
-                    color: AppTheme.primaryColor.withOpacity(0.2),
+                    color: _isOnline
+                        ? AppTheme.successColor.withOpacity(0.2)
+                        : AppTheme.errorColor.withOpacity(0.2),
                   ),
                 ),
                 child: Column(
@@ -63,31 +77,50 @@ class DriverDashboardTab extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(AppTheme.spacing8),
                           decoration: BoxDecoration(
-                            color: AppTheme.successColor.withOpacity(0.2),
+                            color: _isOnline
+                                ? AppTheme.successColor.withOpacity(0.2)
+                                : AppTheme.errorColor.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(AppTheme.borderRadius8),
                           ),
-                          child: const Icon(
-                            Icons.check_circle,
-                            color: AppTheme.successColor,
+                          child: Icon(
+                            _isOnline ? Icons.check_circle : Icons.cancel,
+                            color: _isOnline ? AppTheme.successColor : AppTheme.errorColor,
                             size: 20,
                           ),
                         ),
                         const SizedBox(width: AppTheme.spacing12),
-                        Text(
-                          'Online',
-                          style: AppTheme.titleMedium.copyWith(
-                            color: AppTheme.textPrimaryColor,
-                            fontWeight: FontWeight.w600,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _isOnline ? 'Online' : 'Offline',
+                                style: AppTheme.titleMedium.copyWith(
+                                  color: AppTheme.textPrimaryColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                _isOnline ? 'Ready to accept rides' : 'Not accepting rides',
+                                style: AppTheme.bodyMedium.copyWith(
+                                  color: AppTheme.textSecondaryColor,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+                        Switch(
+                          value: _isOnline,
+                          onChanged: (value) {
+                            setState(() {
+                              _isOnline = value;
+                            });
+                          },
+                          activeColor: AppTheme.successColor,
+                          inactiveThumbColor: AppTheme.errorColor,
+                          inactiveTrackColor: AppTheme.errorColor.withOpacity(0.3),
+                        ),
                       ],
-                    ),
-                    const SizedBox(height: AppTheme.spacing12),
-                    Text(
-                      'Ready to accept rides',
-                      style: AppTheme.bodyLarge.copyWith(
-                        color: AppTheme.textSecondaryColor,
-                      ),
                     ),
                   ],
                 ),
@@ -143,11 +176,13 @@ class DriverDashboardTab extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _buildQuickActionCard(
-                      icon: Icons.directions_car,
-                      title: 'Go Online',
-                      subtitle: 'Start accepting rides',
+                      icon: _isOnline ? Icons.pause_circle : Icons.play_circle,
+                      title: _isOnline ? 'Go Offline' : 'Go Online',
+                      subtitle: _isOnline ? 'Stop accepting rides' : 'Start accepting rides',
                       onTap: () {
-                        // TODO: Toggle online status
+                        setState(() {
+                          _isOnline = !_isOnline;
+                        });
                       },
                     ),
                   ),
