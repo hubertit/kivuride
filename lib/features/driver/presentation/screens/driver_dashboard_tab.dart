@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
+import 'driver_notifications_screen.dart';
 
 class DriverDashboardTab extends StatefulWidget {
   const DriverDashboardTab({super.key});
@@ -72,7 +73,12 @@ class _DriverDashboardTabState extends State<DriverDashboardTab> {
           IconButton(
             icon: const Icon(Icons.notifications_outlined, color: AppTheme.textPrimaryColor),
             onPressed: () {
-              // TODO: Navigate to notifications
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const DriverNotificationsScreen(),
+                ),
+              );
             },
           ),
         ],
