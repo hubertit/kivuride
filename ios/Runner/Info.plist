@@ -45,5 +45,17 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>KivuRide needs access to your location to find nearby drivers, show your current position on the map, and provide accurate pickup and destination services.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>KivuRide needs access to your location to provide real-time ride tracking, find nearby drivers, and ensure accurate pickup and delivery services even when the app is in the background.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>KivuRide needs access to your location to provide real-time ride tracking and ensure accurate pickup and delivery services even when the app is in the background.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>KivuRide may need access to your camera to take photos for profile verification or document uploads.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>KivuRide may need access to your photo library to select images for profile pictures or document verification.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>KivuRide may need access to your microphone for voice calls with drivers or customer support.</string>
 </dict>
 </plist>
