@@ -5,7 +5,6 @@ import '../../../../core/config/app_config.dart';
 import '../../../../shared/widgets/custom_bottom_nav_bar.dart';
 import 'driver_dashboard_tab.dart';
 import 'driver_rides_tab.dart';
-import 'driver_earnings_tab.dart';
 import 'driver_wallet_tab.dart';
 import 'driver_profile_tab.dart';
 
@@ -26,7 +25,6 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen>
   final List<Widget> _tabs = [
     const DriverDashboardTab(),
     const DriverRidesTab(),
-    const DriverEarningsTab(),
     const DriverWalletTab(),
     const DriverProfileTab(),
   ];
