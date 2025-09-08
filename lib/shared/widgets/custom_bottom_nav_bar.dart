@@ -105,10 +105,16 @@ class CustomBottomNavBar extends StatelessWidget {
         index: 2,
       ),
       _buildNavItem(
+        icon: Icons.account_balance_wallet_outlined,
+        activeIcon: Icons.account_balance_wallet,
+        label: 'Wallet',
+        index: 3,
+      ),
+      _buildNavItem(
         icon: Icons.person_outline,
         activeIcon: Icons.person,
         label: 'Profile',
-        index: 3,
+        index: 4,
       ),
     ];
   }
