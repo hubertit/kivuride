@@ -5,7 +5,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/config/app_config.dart';
 import '../../../../core/config/mock_credentials.dart';
 import '../../../../shared/widgets/primary_button.dart';
-import '../../../../shared/widgets/custom_text_field.dart';
+import '../../../../shared/widgets/enhanced_text_field.dart';
 import '../../../../shared/utils/phone_input_formatter.dart';
 import 'signup_screen.dart';
 import 'forgot_password_screen.dart';
@@ -136,8 +136,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           );
         }
         
-        print('Login successful for: $userName ($accountType)');
-        print('User data: $userAccount');
+        // Login successful for: $userName ($accountType)
+        // User data: $userAccount
         
       } else {
         // Invalid credentials
@@ -401,7 +401,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         // Email or Phone Input Field
                         if (!_isPhoneLogin) ...[
                           // Email Field
-                          CustomTextField(
+                          EnhancedTextField(
                             label: 'Email Address',
                             hint: 'Enter your email',
                             controller: _emailController,
@@ -411,15 +411,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               Icons.email_outlined,
                               color: AppTheme.textSecondaryColor,
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your email address';
-                              }
-                              if (!value.contains('@')) {
-                                return 'Please enter a valid email address';
-                              }
-                              return null;
-                            },
+                            validator: ValidationUtils.email,
                           ),
                         ] else ...[
                           // Phone Field with Country Code
@@ -537,7 +529,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         const SizedBox(height: AppTheme.spacing16),
                         
                         // Password Field
-                        CustomTextField(
+                        EnhancedTextField(
                           label: 'Password',
                           hint: 'Enter your password',
                           controller: _passwordController,
@@ -560,15 +552,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               });
                             },
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
-                            }
-                            if (value.length < 6) {
-                              return 'Password must be at least 6 characters';
-                            }
-                            return null;
-                          },
+                          validator: ValidationUtils.password,
                         ),
                         
                         const SizedBox(height: AppTheme.spacing12),

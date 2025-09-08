@@ -8,6 +8,7 @@ import 'features/rider/presentation/screens/notifications_screen.dart';
 import 'features/rider/presentation/screens/recent_activities_screen.dart';
 import 'features/rider/presentation/screens/ride_selection_screen.dart';
 import 'features/rider/presentation/screens/payment_selection_screen.dart';
+import 'shared/widgets/error_boundary.dart';
 
 void main() {
   runApp(
@@ -22,11 +23,12 @@ class KivuRideApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppConfig.appName,
-      theme: AppTheme.themeData,
-      debugShowCheckedModeBanner: false,
-      home: const SimpleAppWrapper(),
+    return ErrorBoundaryWrapper(
+      child: MaterialApp(
+        title: AppConfig.appName,
+        theme: AppTheme.themeData,
+        debugShowCheckedModeBanner: false,
+        home: const SimpleAppWrapper(),
       routes: {
         '/login': (context) => const LoginScreen(),
         '/notifications': (context) => const NotificationsScreen(),
@@ -52,6 +54,7 @@ class KivuRideApp extends StatelessWidget {
           );
         },
       },
+      ),
     );
   }
 }

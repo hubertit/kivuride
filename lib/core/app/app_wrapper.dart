@@ -5,6 +5,7 @@ import '../../core/theme/app_theme.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/rider/presentation/screens/rider_home_screen.dart';
 import '../../features/driver/presentation/screens/driver_home_screen.dart';
+import '../../shared/widgets/skeleton_loader.dart';
 
 class AppWrapper extends ConsumerWidget {
   const AppWrapper({super.key});
@@ -17,21 +18,38 @@ class AppWrapper extends ConsumerWidget {
     if (authState.isLoading) {
       return Scaffold(
         backgroundColor: AppTheme.backgroundColor,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const CircularProgressIndicator(
-                color: AppTheme.primaryColor,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Loading KivuRide...',
-                style: AppTheme.bodyMedium.copyWith(
-                  color: AppTheme.textSecondaryColor,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.spacing24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // App Logo Skeleton
+                const SkeletonAvatar(size: 80.0),
+                const SizedBox(height: AppTheme.spacing24),
+                
+                // App Name Skeleton
+                const SkeletonText(width: 200.0, height: 24.0),
+                const SizedBox(height: AppTheme.spacing8),
+                
+                // Subtitle Skeleton
+                const SkeletonText(width: 150.0, height: 16.0),
+                const SizedBox(height: AppTheme.spacing32),
+                
+                // Loading indicator
+                const CircularProgressIndicator(
+                  color: AppTheme.primaryColor,
                 ),
-              ),
-            ],
+                const SizedBox(height: AppTheme.spacing16),
+                
+                Text(
+                  'Loading KivuRide...',
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: AppTheme.textSecondaryColor,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );

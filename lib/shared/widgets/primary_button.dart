@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
+import '../utils/haptic_feedback.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String label;
@@ -21,12 +22,17 @@ class PrimaryButton extends StatelessWidget {
     this.textColor,
   });
 
+  Future<void> _handlePress() async {
+    await HapticFeedbackManager.buttonPress();
+    onPressed?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: isFullWidth ? double.infinity : null,
       child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
+        onPressed: isLoading ? null : _handlePress,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? AppTheme.primaryColor,
           foregroundColor: textColor ?? AppTheme.backgroundColor,

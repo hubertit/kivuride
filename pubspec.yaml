@@ -46,6 +46,7 @@ dependencies:
   package_info_plus: ^4.2.0
   country_picker: ^2.0.25
   shared_preferences: ^2.2.2
+  vibration: ^1.8.4
   
   # Maps and location
   google_maps_flutter: ^2.5.0
