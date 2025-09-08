@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/config/app_config.dart';
 
 class DriverWalletTab extends StatefulWidget {
   const DriverWalletTab({super.key});
@@ -73,7 +74,7 @@ class _DriverWalletTabState extends State<DriverWalletTab>
 
   void _initializeAnimations() {
     _animationController = AnimationController(
-      duration: AppTheme.mediumAnimation,
+      duration: AppConfig.mediumAnimation,
       vsync: this,
     );
 
