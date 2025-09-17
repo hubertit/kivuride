@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/config/mock_credentials.dart';
+import '../../../../core/providers/auth_provider.dart';
 import '../../../../shared/widgets/profile_avatar.dart';
 import '../../../../shared/widgets/profile_menu_item.dart';
 import '../../../../shared/widgets/profile_stats_card.dart';
@@ -410,13 +411,17 @@ class _RiderProfileTabState extends ConsumerState<RiderProfileTab> {
               ),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop(); // Close dialog
+                // Logout using auth provider
+                await ref.read(authProvider.notifier).logout();
                 // Navigate back to login screen
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/login',
-                  (route) => false,
-                );
+                if (context.mounted) {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/login',
+                    (route) => false,
+                  );
+                }
               },
               child: Text(
                 'Sign Out',

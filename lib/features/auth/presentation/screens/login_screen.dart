@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:country_picker/country_picker.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/config/app_config.dart';
-import '../../../../core/config/mock_credentials.dart';
+import '../../../../core/providers/auth_provider.dart';
+import '../../../../core/services/api_client.dart';
 import '../../../../shared/widgets/primary_button.dart';
 import '../../../../shared/widgets/enhanced_text_field.dart';
 import '../../../../shared/utils/phone_input_formatter.dart';
+import '../../data/services/auth_service.dart';
 import 'signup_screen.dart';
 import 'forgot_password_screen.dart';
 import '../../../rider/presentation/screens/rider_home_screen.dart';
@@ -101,30 +104,56 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       
       final password = _passwordController.text.trim();
       
-      // Validate against mock credentials
-      final userAccount = MockCredentials.validateLogin(identifier, password);
+      // Get device information
+      final deviceInfo = await _getDeviceInfo();
       
-      // Simulate API call delay
-      await Future.delayed(const Duration(seconds: 1));
+      // Initialize auth service
+      final authService = AuthService();
+      authService.initialize();
+      
+      // Call login API
+      final response = await authService.login(
+        identifier: identifier,
+        password: password,
+        deviceInfo: deviceInfo,
+      );
       
       if (!mounted) return;
       
-      if (userAccount != null) {
-        // Show success message
-        final userName = userAccount['name'] as String;
-        final accountType = userAccount['accountType'] as String;
+      if (response.isSuccess && response.data != null) {
+        final loginData = response.data!;
+        final user = loginData.user;
+        final tokens = loginData.tokens;
         
+        // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           AppTheme.successSnackBar(
-            message: 'Welcome back, $userName! ($accountType)',
+            message: 'Welcome back, ${user.name}! (${user.accountType})',
           ),
         );
+        
+        // Store user session for persistent login
+        final userData = {
+          'code': user.code,
+          'name': user.name,
+          'email': user.email,
+          'phone': user.phone,
+          'accountType': user.accountType,
+          'isVerified': user.isVerified,
+          'tokens': {
+            'accessToken': tokens.accessToken,
+            'refreshToken': tokens.refreshToken,
+          },
+        };
+        
+        // Save user session using auth provider
+        await ref.read(authProvider.notifier).login(userData);
         
         // Navigate to appropriate home screen based on account type
         await Future.delayed(const Duration(milliseconds: 500));
         if (!mounted) return;
         
-        if (accountType == 'rider') {
+        if (user.accountType == 'rider') {
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => const RiderHomeScreen()),
             (route) => false,
@@ -136,30 +165,93 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           );
         }
         
-        // Login successful for: $userName ($accountType)
-        // User data: $userAccount
-        
       } else {
-        // Invalid credentials
+        // Handle API error - this should not happen as ApiException should be thrown
         ScaffoldMessenger.of(context).showSnackBar(
           AppTheme.errorSnackBar(
-            message: 'Invalid credentials. Please check your email/phone and password.',
+            message: response.errorMessage.isNotEmpty
+                ? response.errorMessage
+                : 'Login failed. Please try again.',
           ),
         );
       }
       
-    } catch (e) {
+    } on ApiException catch (e) {
       if (!mounted) return;
+      
+      String errorMessage = e.message;
+      
+      // Debug logging
+      print('🚨 ApiException caught: Status Code: ${e.statusCode}, Message: ${e.message}');
+      
+      // Handle specific error cases
+      if (e.statusCode == 401) {
+        errorMessage = 'Invalid credentials. Please check your email/phone and password.';
+      } else if (e.statusCode == 403) {
+        errorMessage = 'Account is deactivated. Please contact support.';
+      } else if (e.statusCode == 422) {
+        errorMessage = 'Please check your information and try again.';
+      } else if (e.statusCode == 500) {
+        errorMessage = 'Server error. Please try again later.';
+      }
       
       ScaffoldMessenger.of(context).showSnackBar(
         AppTheme.errorSnackBar(
-          message: 'Login failed. Please try again.',
+          message: errorMessage,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      
+      // Debug logging
+      print('🚨 Generic exception caught: ${e.toString()}');
+      print('🚨 Exception type: ${e.runtimeType}');
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        AppTheme.errorSnackBar(
+          message: 'Login failed. Please check your internet connection and try again.',
         ),
       );
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
       }
+    }
+  }
+
+  /// Get device information for API calls
+  Future<Map<String, dynamic>> _getDeviceInfo() async {
+    try {
+      final deviceInfo = DeviceInfoPlugin();
+      
+      if (Theme.of(context).platform == TargetPlatform.iOS) {
+        final iosInfo = await deviceInfo.iosInfo;
+        return {
+          'platform': 'ios',
+          'version': iosInfo.systemVersion,
+          'deviceId': iosInfo.identifierForVendor ?? 'unknown',
+        };
+      } else if (Theme.of(context).platform == TargetPlatform.android) {
+        final androidInfo = await deviceInfo.androidInfo;
+        return {
+          'platform': 'android',
+          'version': androidInfo.version.release,
+          'deviceId': androidInfo.id,
+        };
+      } else {
+        return {
+          'platform': 'web',
+          'version': '1.0.0',
+          'deviceId': 'web-device',
+        };
+      }
+    } catch (e) {
+      // Fallback device info
+      return {
+        'platform': 'unknown',
+        'version': '1.0.0',
+        'deviceId': 'unknown-device',
+      };
     }
   }
 
@@ -513,9 +605,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'Please enter your phone number';
-                                      }
-                                      if (value.length < 10) {
-                                        return 'Please enter a valid phone number';
                                       }
                                       return null;
                                     },
