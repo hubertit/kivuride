@@ -48,6 +48,10 @@ dependencies:
   shared_preferences: ^2.2.2
   vibration: ^1.8.4
   
+  # HTTP and API
+  http: ^1.1.0
+  dio: ^5.4.0
+  
   # Maps and location
   google_maps_flutter: ^2.5.0
   geolocator: ^10.1.0

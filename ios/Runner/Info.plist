@@ -57,5 +57,7 @@
 	<string>KivuRide may need access to your photo library to select images for profile pictures or document verification.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>KivuRide may need access to your microphone for voice calls with drivers or customer support.</string>
+	<key>GMSApiKey</key>
+	<string>AIzaSyDxBhRITQxdhqgvo2FP5GkY_OI0hdeKvyg</string>
 </dict>
 </plist>

@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/config/app_config.dart';
+import '../../../../core/providers/auth_provider.dart';
 import '../../../auth/presentation/screens/login_screen.dart';
+import '../../../rider/presentation/screens/rider_home_screen.dart';
+import '../../../driver/presentation/screens/driver_home_screen.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -106,15 +109,50 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     await Future.delayed(const Duration(milliseconds: 300));
     _progressController.forward();
     
-    // Wait for splash duration and navigate
+    // Wait for splash duration and check auth status
     await Future.delayed(const Duration(milliseconds: AppConfig.splashDuration));
     
     if (!mounted) return;
     
-    // Navigate to login screen
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-    );
+    // Check authentication status and navigate accordingly
+    _navigateBasedOnAuthStatus();
+  }
+
+  void _navigateBasedOnAuthStatus() {
+    final authState = ref.read(authProvider);
+    
+    if (authState.isLoading) {
+      // Still loading, wait a bit more
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) _navigateBasedOnAuthStatus();
+      });
+      return;
+    }
+    
+    if (authState.isLoggedIn && authState.userData != null) {
+      // User is logged in, navigate to appropriate home screen
+      final accountType = authState.userData!['accountType'] as String?;
+      
+      if (accountType == 'rider') {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const RiderHomeScreen()),
+        );
+      } else if (accountType == 'driver') {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const DriverHomeScreen()),
+        );
+      } else {
+        // Unknown account type, go to login
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      }
+    } else {
+      // User is not logged in, go to login screen
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    }
   }
 
   @override

@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:country_picker/country_picker.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/config/app_config.dart';
+import '../../../../core/services/api_client.dart';
 import '../../../../shared/widgets/primary_button.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/utils/phone_input_formatter.dart';
+import '../../data/services/auth_service.dart';
+import '../../data/models/registration_request.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -134,39 +137,73 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
     setState(() => _isLoading = true);
     
     try {
-      // Get form data
-      final accountData = {
-        'name': _nameController.text.trim(),
-        'email': _emailController.text.trim(),
-        'phone': '+${_selectedCountry.phoneCode}${_phoneController.text.trim()}',
-        'password': _passwordController.text,
-        'accountType': 'rider', // All registrations are for riders
-      };
+      // Create registration request
+      final registrationRequest = RegistrationRequest.fromFormData(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        phone: '+${_selectedCountry.phoneCode}${_phoneController.text.trim()}',
+        password: _passwordController.text,
+        accountType: 'rider', // All registrations are for riders
+        countryCode: _selectedCountry.countryCode,
+      );
       
-      // TODO: Send accountData to API
-      print('Account data: $accountData');
+      // Initialize auth service if not already done
+      final authService = AuthService();
+      authService.initialize();
       
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      // Call registration API
+      final response = await authService.register(registrationRequest);
       
       if (!mounted) return;
       
-      // Show success message
+      if (response.isSuccess && response.data != null) {
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          AppTheme.successSnackBar(
+            message: response.data!.verificationRequired
+                ? 'Account created successfully! Please verify your phone number.'
+                : 'Account created successfully! Welcome to KivuRide.',
+          ),
+        );
+        
+        // Navigate to login screen or verification screen
+        Navigator.of(context).pop();
+      } else {
+        // Handle API error
+        ScaffoldMessenger.of(context).showSnackBar(
+          AppTheme.errorSnackBar(
+            message: response.errorMessage.isNotEmpty
+                ? response.errorMessage
+                : 'Registration failed. Please try again.',
+          ),
+        );
+      }
+      
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      
+      String errorMessage = e.message;
+      
+      // Handle specific error cases
+      if (e.statusCode == 409) {
+        errorMessage = 'An account with this email or phone number already exists.';
+      } else if (e.statusCode == 422) {
+        errorMessage = 'Please check your information and try again.';
+      } else if (e.statusCode == 400) {
+        errorMessage = 'Invalid information provided. Please check your details.';
+      }
+      
       ScaffoldMessenger.of(context).showSnackBar(
-        AppTheme.successSnackBar(
-          message: 'Rider account created successfully! Welcome to KivuRide.',
+        AppTheme.errorSnackBar(
+          message: errorMessage,
         ),
       );
-      
-      // Navigate to login screen
-      Navigator.of(context).pop();
-      
     } catch (e) {
       if (!mounted) return;
       
       ScaffoldMessenger.of(context).showSnackBar(
         AppTheme.errorSnackBar(
-          message: 'Sign up failed. Please try again.',
+          message: 'Registration failed. Please check your internet connection and try again.',
         ),
       );
     } finally {
@@ -382,9 +419,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter your phone number';
-                                    }
-                                    if (value.length < 10) {
-                                      return 'Please enter a valid phone number';
                                     }
                                     return null;
                                   },
